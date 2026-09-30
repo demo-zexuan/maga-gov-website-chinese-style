@@ -12,8 +12,10 @@
     "preview": "vite preview --port 4173",
     "typecheck": "tsc -b --noEmit false --emitDeclarationOnly false",
     "assets": "node scripts/gen-assets.mjs",
-    "deploy": "pnpm run build && wrangler deploy",
-    "cf:preview": "pnpm run build && wrangler dev"
+    "photos": "node scripts/fetch-photos.mjs",
+    "verify": "node scripts/verify.mjs",
+    "deploy": "pnpm run build && wrangler pages deploy dist --project-name=maga-gov-website-chinese-style --branch=main",
+    "cf:preview": "pnpm run build && wrangler pages dev dist"
   },
   "dependencies": {
     "react": "^19.1.0",

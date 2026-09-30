@@ -1,16 +1,15 @@
 {
-  // Cloudflare Workers 静态资源部署配置
-  // 站点是纯静态 SPA（hash 路由），因此无需 Worker 脚本，只要 assets 目录即可。
+  // Cloudflare Pages 部署配置
+  //
+  // 站点是纯静态 SPA（hash 路由），因此不需要任何 Worker 脚本，
+  // 只要把 dist 目录交给 Pages 即可。
+  //
+  // 为什么用 Pages 而不是 Workers：
+  // Workers 的访问域名是 `<worker>.<账号子域>.workers.dev`，账号子域是
+  // 账号级设置，会出现在 URL 里且影响账号下所有 Worker；Pages 的域名是
+  // `<项目名>.pages.dev`，与账号信息无关，更适合公开分享。
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "maga-gov-website-chinese-style",
   "compatibility_date": "2025-09-01",
-  "assets": {
-    "directory": "./dist",
-    // hash 路由下 /index.html 就是唯一入口；未知路径回退到 SPA 入口而不是 404
-    "not_found_handling": "single-page-application",
-    "html_handling": "auto-trailing-slash"
-  },
-  "observability": {
-    "enabled": true
-  }
+  "pages_build_output_dir": "./dist"
 }

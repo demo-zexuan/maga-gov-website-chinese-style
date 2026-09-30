@@ -74,14 +74,21 @@ pnpm dev            # http://127.0.0.1:5173
 ```bash
 pnpm run build      # 类型检查 + 生产构建，产物在 dist/
 pnpm run preview    # 本地预览构建产物
-pnpm run deploy     # 构建并部署到 Cloudflare Workers
+pnpm run verify     # 站点完整性自检（占位桩 / 数据引用 / 彩蛋实现）
+pnpm run deploy     # 构建并部署到 Cloudflare Pages
 ```
 
 ---
 
-## ☁️ 部署到 Cloudflare Workers
+## 🌐 线上地址
 
-项目用 **Cloudflare Workers 静态资源**（`assets` 绑定）托管，配置见 [`wrangler.jsonc`](./wrangler.jsonc)。
+**<https://maga-gov-website-chinese-style.pages.dev>**
+
+---
+
+## ☁️ 部署到 Cloudflare Pages
+
+项目用 **Cloudflare Pages** 托管静态产物，配置见 [`wrangler.jsonc`](./wrangler.jsonc)（`pages_build_output_dir`）。
 
 ```bash
 # 1. 登录（首次）
@@ -99,6 +106,15 @@ export CLOUDFLARE_ACCOUNT_ID=<your-account-id>
 pnpm run deploy
 ```
 
+### 为什么是 Pages 而不是 Workers
+
+Workers 的访问域名是 `<worker 名>.<账号子域>.workers.dev`，其中**账号子域是账号级设置**，
+会出现在 URL 里，而且修改它会影响该账号下所有 Worker。Pages 的域名是
+`<项目名>.pages.dev`，与账号信息无关，更适合公开分享。
+
+站点使用 **hash 路由**（`#/news/123`），因此不需要任何服务端重写规则，刷新任意页面都不会 404；
+[`public/_redirects`](./public/_redirects) 额外提供了一条兜底，让手输的深层路径也能进入站内。
+
 站点使用 **hash 路由**（`#/news/123`），因此不需要任何服务端 rewrite 规则，刷新任意页面都不会 404。`wrangler.jsonc` 里仍配置了 `not_found_handling: single-page-application` 作为兜底。
 
 ---
@@ -108,8 +124,34 @@ pnpm run deploy
 | 项 | 选择 | 为什么 |
 |---|---|---|
 | 框架 | React 19 + TypeScript | — |
-| 构建 | Vite 6 | 产物纯静态，适合 Workers assets |
+| 构建 | Vite 6 | 产物纯静态，适合 Pages / Workers 静态托管 |
 | 路由 | 自研 60 行 hash 路由 | 零依赖；古早网站的 URL 本来就"土" |
+| 样式 | 手写 CSS + CSS 变量令牌 | 2008 年的美工质感无法用现代框架还原 |
+| 依赖 | **只有 `react` / `react-dom`** | 全站图形用手写 SVG 生成，零外部资源 |
+| 响应式 | 纯 CSS 媒体查询，按模块拆文件 | 不改组件结构即可逐级降级 |
+
+### 移动端适配
+
+桌面端 ≥1400px 是**参考图还原模式**，版式、字号、留白一律不动；以下逐级降级：
+
+| 断点 | 行为 |
+|---|---|
+| `≤1399px` | 紧凑桌面：侧栏收窄，导航压缩 |
+| `≤1279px` | 主导航转为汉堡菜单 |
+| `≤1023px` | 三栏折叠为主栏满宽 + 侧栏两列 |
+| `≤767px` | 全部单列；宽表横向可滚 |
+| `≤420px` | 小屏再收一档 |
+
+样式拆成 `src/styles/responsive.css`（外壳与通用组件地基）与
+`src/styles/responsive/<模块>.css`（11 个业务模块各自的适配），
+后者加载在后、可覆盖前者，模块之间互不干扰。
+
+实测 **6 个宽度 × 33 条路由 = 198 次检查**：零横向溢出、零控制台错误。
+
+> 唯一的例外是**长者模式**：它会把版式放大到 1900px 并产生横向滚动 ——
+> 这是刻意保留的笑点（真实政务网站的"长者模式"经常把布局撑坏），
+> 默认浏览路径不会触发。
+
 | 样式 | 手写 CSS + CSS 变量令牌 | 2008 年的美工质感无法用现代框架还原 |
 | 依赖 | **只有 `react` / `react-dom`** | 全站图形用手写 SVG 生成，零外部资源 |
 
