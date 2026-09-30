@@ -1,0 +1,16 @@
+{
+  // Cloudflare Workers 静态资源部署配置
+  // 站点是纯静态 SPA（hash 路由），因此无需 Worker 脚本，只要 assets 目录即可。
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "maga-gov-website-chinese-style",
+  "compatibility_date": "2025-09-01",
+  "assets": {
+    "directory": "./dist",
+    // hash 路由下 /index.html 就是唯一入口；未知路径回退到 SPA 入口而不是 404
+    "not_found_handling": "single-page-application",
+    "html_handling": "auto-trailing-slash"
+  },
+  "observability": {
+    "enabled": true
+  }
+}

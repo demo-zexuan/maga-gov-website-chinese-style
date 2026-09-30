@@ -1,0 +1,22 @@
+# 依赖
+node_modules/
+.pnpm-store/
+
+# 构建产物
+dist/
+.wrangler/
+.dev.vars
+
+# TypeScript 增量编译缓存
+*.tsbuildinfo
+
+# 编辑器 / 系统
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.log
+
+# 临时文件
+.tmp/
+scratch/

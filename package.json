@@ -1,0 +1,38 @@
+{
+  "name": "maga-gov-website-chinese-style",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "美利坚合众国网上便民服务中心 — MAGA 风格 + 古早中国政府网站风格 的纯搞笑讽刺静态站点（无政治倾向）",
+  "author": "zexuan.peng <pengzexuan2001@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview --port 4173",
+    "typecheck": "tsc -b --noEmit false --emitDeclarationOnly false",
+    "assets": "node scripts/gen-assets.mjs",
+    "deploy": "pnpm run build && wrangler deploy",
+    "cf:preview": "pnpm run build && wrangler dev"
+  },
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.11",
+    "wrangler": "^4.143.0"
+  },
+  "pnpm": {
+    "//": "esbuild / workerd / sharp 需要执行安装脚本以落地原生二进制，否则 vite build 与 wrangler deploy 都会失败",
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "workerd",
+      "sharp"
+    ]
+  }
+}
