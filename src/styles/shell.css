@@ -1,0 +1,489 @@
+/**
+ * 外壳样式：顶部工具条 / 站标横幅 / 主导航 / 页脚
+ *
+ * I. 结构
+ *
+ * 1. .mg-topbar   —— 30px 高的系统工具条（日期、天气、语言、登录、搜索、热线）
+ * 2. .mg-header   —— 红色渐变站标横幅，含国徽、旗面、自由女神剪影
+ * 3. .mg-nav      —— 藏青渐变主导航，12 个字级栏目
+ * 4. .mg-footer   —— 藏青页脚，含版权与友情链接
+ *
+ * II. 关键还原点
+ *
+ * 1. 站标横幅的左右两侧是"国旗 + 自由女神"的照片式构图，这里用 CSS + SVG 拼出。
+ * 2. 导航项之间有 1px 纵向分隔线，hover 时变红底白字。
+ * 3. 页脚的"让美国再次伟大" 使用描边字，还原图片中的 END OF PAGE 标语感。
+ *
+ * @module styles/shell
+ * @author zexuan.peng <pengzexuan2001@gmail.com>
+ * @created 2026-09-30
+ */
+
+/* ================= I. 顶部工具条 ================= */
+
+.mg-topbar {
+  height: var(--topbar-height);
+  background: var(--c-topbar-bg);
+  border-bottom: 1px solid var(--c-topbar-border);
+  font-family: var(--font-song);
+  font-size: var(--fs-12);
+  color: var(--c-text-sub);
+  line-height: var(--topbar-height);
+}
+
+.mg-topbar__inner {
+  width: var(--layout-width);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 8px;
+}
+
+.mg-topbar__left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+
+.mg-topbar__sep {
+  color: var(--c-border-dark);
+}
+
+.mg-topbar__weather {
+  color: var(--c-text-sub);
+}
+
+.mg-topbar__weather b {
+  color: var(--c-orange);
+  font-weight: normal;
+}
+
+.mg-topbar__right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.mg-topbar__link {
+  color: var(--c-link);
+  padding: 0 2px;
+}
+
+.mg-topbar__link.is-strong {
+  color: var(--c-red);
+  font-weight: bold;
+}
+
+/* 站内搜索：古早的「输入框 + 红色按钮」组合 */
+.mg-topsearch {
+  display: flex;
+  align-items: center;
+  height: 20px;
+  border: 1px solid var(--c-border-dark);
+  background: var(--c-white);
+}
+
+.mg-topsearch input {
+  width: 132px;
+  height: 100%;
+  padding: 0 4px;
+  border: 0;
+  background: transparent;
+  line-height: 18px;
+}
+
+.mg-topsearch button {
+  height: 100%;
+  padding: 0 9px;
+  border: 0;
+  background: var(--c-red-bar-gradient);
+  color: #fff;
+  font-size: var(--fs-12);
+  letter-spacing: 1px;
+}
+
+.mg-topsearch button:hover {
+  background: linear-gradient(180deg, #e03a3a, #c00);
+}
+
+.mg-topbar__hotline {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--c-red);
+  font-weight: bold;
+  font-family: var(--font-hei);
+}
+
+.mg-topbar__hotline small {
+  display: block;
+  font-weight: normal;
+  font-size: var(--fs-10);
+  color: var(--c-text-muted);
+  line-height: 1;
+}
+
+/* ================= II. 站标横幅 ================= */
+
+.mg-header {
+  position: relative;
+  height: 132px;
+  background: var(--c-red-gradient);
+  overflow: hidden;
+}
+
+.mg-header__inner {
+  position: relative;
+  width: var(--layout-width);
+  height: 100%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 左侧国旗 + 国会山；右侧自由女神。用绝对定位贴边，中间留给标题。 */
+.mg-header__flag {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 300px;
+  opacity: 0.95;
+}
+
+.mg-header__liberty {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 260px;
+  opacity: 0.95;
+}
+
+.mg-header__center {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 300px;
+}
+
+.mg-header__seal {
+  position: absolute;
+  left: 216px;
+  top: 12px;
+  width: 108px;
+  height: 108px;
+  z-index: 1;
+}
+
+.mg-header__title {
+  font-family: var(--font-hei);
+  font-size: var(--fs-42);
+  font-weight: bold;
+  color: #fff;
+  letter-spacing: 3px;
+  line-height: 1.16;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35), 0 0 12px rgba(255, 220, 120, 0.45);
+  margin: 0;
+}
+
+.mg-header__subtitle {
+  font-family: var(--font-num);
+  font-size: var(--fs-16);
+  color: #ffe9a3;
+  letter-spacing: 0.6px;
+  margin-top: 2px;
+  font-weight: bold;
+}
+
+.mg-header__slogan {
+  margin-top: 4px;
+  font-family: var(--font-hei);
+  font-size: var(--fs-13);
+  color: #ffe9a3;
+  letter-spacing: 2px;
+}
+
+.mg-header__slogan span {
+  margin: 0 4px;
+}
+
+/* 右上角的「更便民 / 更高效 / 更强大」三连标语 */
+.mg-header__claims {
+  position: absolute;
+  right: 8px;
+  top: 14px;
+  z-index: 3;
+  text-align: center;
+  font-family: var(--font-hei);
+}
+
+.mg-header__claims span {
+  display: block;
+  font-size: var(--fs-16);
+  color: #fff8d8;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  line-height: 1.35;
+}
+
+.mg-header__claims span:last-child {
+  color: var(--c-gold);
+}
+
+/* ================= III. 主导航 ================= */
+
+.mg-nav {
+  height: var(--nav-height);
+  background: var(--c-navy-gradient);
+  border-top: 1px solid #2e5f9e;
+  border-bottom: 2px solid var(--c-red-deep);
+}
+
+.mg-nav__inner {
+  width: var(--layout-width);
+  height: 100%;
+  margin: 0 auto;
+  display: flex;
+  align-items: stretch;
+  padding-left: 2px;
+}
+
+/* 一级栏目单元格：承载 <a> 与其兄弟级下拉菜单，避免 <a> 嵌套 */
+.mg-nav__cell {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.mg-nav__cell:first-child {
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.mg-nav__item {
+  display: flex;
+  align-items: center;
+  padding: 0 26px;
+  font-family: var(--font-hei);
+  font-size: var(--fs-15);
+  font-weight: bold;
+  color: #eaf1fb;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.mg-nav__cell:hover > .mg-nav__item {
+  background: var(--c-red);
+  color: #fff;
+  text-decoration: none;
+}
+
+.mg-nav__cell.is-active > .mg-nav__item {
+  background: var(--c-red);
+  color: #fff;
+}
+
+.mg-nav__cell.is-active::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -2px;
+  margin-left: -5px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid var(--c-red);
+}
+
+/* 首页图标 */
+.mg-nav__home-icon {
+  width: 14px;
+  height: 13px;
+  margin-right: 4px;
+}
+
+/* 导航下拉：部分栏目有子栏目 */
+.mg-nav__sub {
+  position: absolute;
+  left: -1px;
+  top: var(--nav-height);
+  z-index: var(--z-dropdown);
+  min-width: 128px;
+  padding: 4px 0;
+  background: var(--c-white);
+  border: 1px solid var(--c-navy);
+  box-shadow: var(--shadow-pop);
+  display: none;
+}
+
+.mg-nav__item:hover .mg-nav__sub {
+  display: block;
+}
+
+.mg-nav__sub a {
+  display: block;
+  padding: 3px 14px;
+  font-family: var(--font-song);
+  font-size: var(--fs-12);
+  font-weight: normal;
+  color: var(--c-text-sub);
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.mg-nav__sub a:hover {
+  background: var(--c-red-tint);
+  color: var(--c-red);
+  text-decoration: none;
+}
+
+/* ================= IV. 页脚 ================= */
+
+.mg-footer {
+  margin-top: 10px;
+  background: var(--c-footer-bg);
+  border-top: 3px solid var(--c-red);
+  color: var(--c-footer-text);
+  font-family: var(--font-song);
+}
+
+.mg-footer__links {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.mg-footer__links-inner {
+  width: var(--layout-width);
+  margin: 0 auto;
+  padding: 7px 8px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 0;
+  font-size: var(--fs-12);
+}
+
+.mg-footer__links-inner a {
+  color: var(--c-footer-text);
+  padding: 0 8px;
+}
+
+.mg-footer__links-inner a:hover {
+  color: var(--c-gold);
+}
+
+.mg-footer__links-inner .mg-footer__label {
+  color: var(--c-gold);
+  font-weight: bold;
+  padding-right: 4px;
+}
+
+.mg-footer__main {
+  width: var(--layout-width);
+  margin: 0 auto;
+  padding: 12px 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: var(--fs-12);
+}
+
+.mg-footer__brand {
+  flex: 1 1 auto;
+}
+
+.mg-footer__org {
+  font-family: var(--font-hei);
+  font-size: var(--fs-14);
+  color: #fff;
+  font-weight: bold;
+}
+
+.mg-footer__org-en {
+  font-family: var(--font-num);
+  color: #9db4d2;
+  font-size: var(--fs-12);
+}
+
+.mg-footer__meta {
+  margin-top: 5px;
+  color: #8ea6c4;
+  line-height: 1.7;
+}
+
+.mg-footer__meta a {
+  color: #8ea6c4;
+}
+
+.mg-footer__badges {
+  display: flex;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.mg-footer__badge {
+  width: 68px;
+  padding: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.06);
+  text-align: center;
+  font-size: var(--fs-10);
+  line-height: 1.3;
+  color: #b9cbe2;
+}
+
+.mg-footer__badge b {
+  display: block;
+  font-family: var(--font-num);
+  font-size: var(--fs-16);
+  color: var(--c-gold);
+}
+
+.mg-footer__follow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  color: #9db4d2;
+}
+
+.mg-footer__follow a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #dce8f6;
+  font-family: var(--font-num);
+  font-weight: bold;
+  font-size: var(--fs-11);
+}
+
+.mg-footer__follow a:hover {
+  background: var(--c-red);
+  color: #fff;
+  text-decoration: none;
+}
+
+/* 页脚右侧的竖排「让美国再次伟大」标语 */
+.mg-footer__slogan {
+  flex: 0 0 auto;
+  writing-mode: vertical-rl;
+  height: 82px;
+  font-family: var(--font-hei);
+  font-size: var(--fs-13);
+  font-weight: bold;
+  letter-spacing: 3px;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--c-gold);
+  text-align: center;
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  padding-left: 10px;
+}

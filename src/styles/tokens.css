@@ -1,0 +1,134 @@
+/**
+ * 设计令牌 —— 古早中国政府门户网站 × MAGA 配色
+ *
+ * I. 设计意图
+ *
+ * 1. 目标观感是「2008 年前后的县级政府门户网站」：米灰底、1px 实线边框、
+ *    12px 宋体正文、带渐变与浮雕感的面板标题栏、密集的信息排布。
+ * 2. 配色在传统政务红/藏青的基础上叠加 MAGA 元素（星条红、旗金、鹰徽金）。
+ * 3. 全站不使用圆角（除极少数徽标），这是古早网站最重要的视觉指纹之一。
+ *
+ * II. 使用约定
+ *
+ * 1. 所有值必须通过 var(--token) 引用，禁止在组件里硬编码十六进制色值。
+ * 2. 字号体系刻意偏小（12px 基准），这是还原度的关键，不要"现代化"放大。
+ * 3. 间距遵循 2/4/6/8/10/12/16/20 的紧凑节奏。
+ *
+ * @module styles/tokens
+ * @author zexuan.peng <pengzexuan2001@gmail.com>
+ * @created 2026-09-30
+ */
+
+:root {
+  /* ---------- I. 主色：政务红 ---------- */
+  --c-red: #bd0000;
+  --c-red-deep: #8b0000;
+  --c-red-bright: #e60012;
+  --c-red-light: #fdeeee;
+  --c-red-tint: #fff5f5;
+  --c-red-gradient: linear-gradient(180deg, #d81f26 0%, #bd0000 55%, #960000 100%);
+  --c-red-bar-gradient: linear-gradient(180deg, #c81a20 0%, #a80000 100%);
+
+  /* ---------- II. 主色：政务藏青（导航条 / 次级标题） ---------- */
+  --c-navy: #0d2a52;
+  --c-navy-deep: #071a34;
+  --c-navy-light: #1c4b8a;
+  --c-navy-gradient: linear-gradient(180deg, #1c4a86 0%, #0d2a52 50%, #071a34 100%);
+
+  /* ---------- III. 强调色：旗金 / 鹰金 ---------- */
+  --c-gold: #f5c542;
+  --c-gold-deep: #c99a15;
+  --c-gold-light: #ffe9a3;
+
+  /* ---------- IV. 链接与状态色 ---------- */
+  --c-link: #1a4d8f;
+  --c-link-hover: #bd0000;
+  --c-link-visited: #6a3d9a;
+  --c-orange: #e8641a;
+  --c-green: #1a7f37;
+  --c-blue-badge: #2b6cb0;
+
+  /* ---------- V. 中性色 ---------- */
+  --c-white: #ffffff;
+  --c-page-bg: #e9e9e9;
+  --c-body-bg: #f4f4f4;
+  --c-border: #c9c9c9;
+  --c-border-light: #e0e0e0;
+  --c-border-dark: #9a9a9a;
+  --c-divider: #e5e5e5;
+  --c-text: #222222;
+  --c-text-sub: #444444;
+  --c-text-muted: #7a7a7a;
+  --c-text-faint: #a5a5a5;
+
+  /* ---------- VI. 面板标题栏渐变（古早"凸起"质感） ---------- */
+  --c-panel-head: linear-gradient(180deg, #fdfdfd 0%, #eef1f5 45%, #dfe4ea 100%);
+  --c-panel-head-red: linear-gradient(180deg, #d5232b 0%, #b40000 100%);
+  --c-panel-head-navy: linear-gradient(180deg, #26558f 0%, #14335f 100%);
+  --c-panel-head-gold: linear-gradient(180deg, #ffe9a3 0%, #f5c542 45%, #d9a91c 100%);
+
+  /* ---------- VII. 工具条 / 页脚 ---------- */
+  --c-topbar-bg: #f2f2f2;
+  --c-topbar-border: #d5d5d5;
+  --c-footer-bg: #0d2a52;
+  --c-footer-deep: #071a34;
+  --c-footer-text: #c8d4e4;
+
+  /* ---------- VIII. 字体 ---------- */
+  /* 宋体是古早政务网站的绝对主体字体；macOS 回退到 Songti SC */
+  --font-song: "SimSun", "宋体", "Songti SC", "STSong", "Noto Serif CJK SC", serif;
+  /* 黑体用于标题 / 导航，避免宋体在大字重下发虚 */
+  --font-hei: "Microsoft YaHei", "微软雅黑", "PingFang SC", "Heiti SC", "Hiragino Sans GB",
+    sans-serif;
+  --font-num: "Times New Roman", "Georgia", "SimSun", serif;
+
+  /* ---------- IX. 字号（刻意保持紧凑的古早比例） ---------- */
+  --fs-10: 10px;
+  --fs-11: 11px;
+  --fs-12: 12px;
+  --fs-13: 13px;
+  --fs-14: 14px;
+  --fs-15: 15px;
+  --fs-16: 16px;
+  --fs-18: 18px;
+  --fs-20: 20px;
+  --fs-24: 24px;
+  --fs-28: 28px;
+  --fs-34: 34px;
+  --fs-42: 42px;
+
+  /* ---------- X. 间距 ---------- */
+  --sp-1: 1px;
+  --sp-2: 2px;
+  --sp-3: 3px;
+  --sp-4: 4px;
+  --sp-5: 5px;
+  --sp-6: 6px;
+  --sp-8: 8px;
+  --sp-10: 10px;
+  --sp-12: 12px;
+  --sp-14: 14px;
+  --sp-16: 16px;
+  --sp-20: 20px;
+  --sp-24: 24px;
+  --sp-30: 30px;
+  --sp-40: 40px;
+
+  /* ---------- XI. 尺寸 ---------- */
+  --layout-width: 1400px;
+  --topbar-height: 30px;
+  --nav-height: 38px;
+  --panel-head-height: 28px;
+
+  /* ---------- XII. 投影：只用最朴素的 1px 硬阴影，禁用现代柔和阴影 ---------- */
+  --shadow-flat: 0 1px 0 rgba(0, 0, 0, 0.06);
+  --shadow-panel: 0 1px 2px rgba(0, 0, 0, 0.1);
+  --shadow-pop: 2px 2px 6px rgba(0, 0, 0, 0.3);
+
+  /* ---------- XIII. 层级 ---------- */
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-modal: 900;
+  --z-toast: 950;
+  --z-easter: 999;
+}

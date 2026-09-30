@@ -1,0 +1,186 @@
+/**
+ * 基础样式：重置 + 排版 + 全局链接行为
+ *
+ * I. 设计说明
+ *
+ * 1. 刻意保留古早浏览器的一些"缺陷美学"：默认蓝色下划线链接、选中文本高亮、
+ *    以及表格边线合并。
+ * 2. 不做现代 reset（不统一圆角、不重置 button 外观），因为古早站点的控件
+ *    本来就带系统原生边框。
+ *
+ * @module styles/base
+ * @author zexuan.peng <pengzexuan2001@gmail.com>
+ * @created 2026-09-30
+ */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  /* 古早站点普遍锁定桌面宽度，这里用固定 viewport + 横向滚动还原这种体验 */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--c-page-bg);
+  color: var(--c-text);
+  font-family: var(--font-song);
+  font-size: var(--fs-12);
+  line-height: 1.6;
+  overflow-x: auto;
+}
+
+#root {
+  min-width: var(--layout-width);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-family: var(--font-hei);
+  font-weight: bold;
+}
+
+p {
+  margin: 0 0 8px;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+img {
+  border: 0;
+  vertical-align: middle;
+}
+
+a {
+  color: var(--c-link);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+a:hover {
+  color: var(--c-link-hover);
+  text-decoration: underline;
+}
+
+/* 古早站点访问过的链接是紫色的，保留这个细节 */
+a:visited {
+  color: var(--c-link-visited);
+}
+
+button {
+  font-family: var(--font-song);
+  font-size: var(--fs-12);
+  cursor: pointer;
+}
+
+input,
+select,
+textarea {
+  font-family: var(--font-song);
+  font-size: var(--fs-12);
+  color: var(--c-text);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 1px dotted var(--c-link);
+  outline-offset: -2px;
+}
+
+::selection {
+  background: var(--c-red);
+  color: #fff;
+}
+
+/* ============ 通用工具类（全站共用，Sub 请优先复用） ============ */
+
+.mg-container {
+  width: var(--layout-width);
+  margin: 0 auto;
+  background: var(--c-white);
+}
+
+.mg-clearfix::after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+.mg-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.mg-text-red {
+  color: var(--c-red);
+}
+
+.mg-text-muted {
+  color: var(--c-text-muted);
+}
+
+.mg-text-center {
+  text-align: center;
+}
+
+.mg-nowrap {
+  white-space: nowrap;
+}
+
+/* 「更多」链接：古早站点统一用红色双箭头 */
+.mg-more {
+  font-family: var(--font-song);
+  font-size: var(--fs-12);
+  color: var(--c-text-muted);
+}
+
+.mg-more::after {
+  content: '»';
+  margin-left: 2px;
+  letter-spacing: -2px;
+}
+
+.mg-more:hover {
+  color: var(--c-red);
+  text-decoration: none;
+}
+
+/* 全站滚动条也复古一点（WebKit） */
+::-webkit-scrollbar {
+  width: 14px;
+  height: 14px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-left: 1px solid var(--c-border-light);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #d8d8d8, #b4b4b4);
+  border: 1px solid #9a9a9a;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #c8c8c8, #a0a0a0);
+}

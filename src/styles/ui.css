@@ -1,0 +1,843 @@
+/**
+ * 通用 UI 组件样式
+ *
+ * I. 组件清单
+ *
+ * 1. .mg-panel        —— 带渐变标题栏的内容面板（全站最高频组件）
+ * 2. .mg-tabbar       —— 面板内的选项卡（古早"文件夹标签"质感）
+ * 3. .mg-list         —— 带日期/序号的新闻列表
+ * 4. .mg-badge        —— 红色方块角标（重磅 / 置顶 / 新）
+ * 5. .mg-btn          —— 系统原生风按钮
+ * 6. .mg-table        —— 1px 全边框数据表
+ * 7. .mg-modal        —— 居中弹窗（无圆角、深色遮罩）
+ * 8. .mg-marquee      —— 走马灯公告
+ * 9. .mg-iconbox      —— 热门服务的图标格子
+ * 10. .mg-stat        —— 大号数字统计块
+ * 11. .mg-crumbs      —— 面包屑
+ * 12. .mg-pager       —— 分页器
+ * 13. .mg-form        —— 古早表单行
+ * 14. .mg-progress    —— 进度条
+ * 15. .mg-alert       —— 提示条
+ * 16. .mg-easter      —— 彩蛋相关容器
+ *
+ * II. 约定
+ *
+ * 1. 全站一律 square corner：除 .mg-badge--round 外不得出现 border-radius。
+ * 2. 面板标题栏必须使用 var(--c-panel-head*) 渐变之一，禁止纯色。
+ *
+ * @module styles/ui
+ * @author zexuan.peng <pengzexuan2001@gmail.com>
+ * @created 2026-09-30
+ */
+
+/* ================= 1. 面板 ================= */
+
+.mg-panel {
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  margin-bottom: 8px;
+}
+
+.mg-panel__head {
+  position: relative;
+  height: var(--panel-head-height);
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  background: var(--c-panel-head);
+  border-bottom: 1px solid var(--c-border);
+  font-family: var(--font-hei);
+  font-size: var(--fs-13);
+  font-weight: bold;
+  color: var(--c-navy);
+}
+
+/* 标题前的红色小方块装饰 */
+.mg-panel__head::before {
+  content: '';
+  width: 4px;
+  height: 13px;
+  margin-right: 6px;
+  background: var(--c-red);
+  flex: 0 0 auto;
+}
+
+.mg-panel__head-text {
+  flex: 1 1 auto;
+}
+
+.mg-panel__head-extra {
+  flex: 0 0 auto;
+  font-family: var(--font-song);
+  font-size: var(--fs-12);
+  font-weight: normal;
+}
+
+.mg-panel__body {
+  padding: 8px;
+}
+
+.mg-panel__body--flush {
+  padding: 0;
+}
+
+/* 红色标题栏变体（用于"办事统计""建言献策"等强调面板） */
+.mg-panel--red > .mg-panel__head {
+  background: var(--c-panel-head-red);
+  color: #fff;
+  border-bottom-color: var(--c-red-deep);
+}
+
+.mg-panel--red > .mg-panel__head::before {
+  background: var(--c-gold);
+}
+
+.mg-panel--navy > .mg-panel__head {
+  background: var(--c-panel-head-navy);
+  color: #fff;
+  border-bottom-color: var(--c-navy-deep);
+}
+
+.mg-panel--navy > .mg-panel__head::before {
+  background: var(--c-gold);
+}
+
+/* ================= 2. 选项卡 ================= */
+
+.mg-tabbar {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 0 6px;
+  background: var(--c-panel-head);
+  border-bottom: 1px solid var(--c-border);
+  height: 30px;
+}
+
+.mg-tabbar__tab {
+  position: relative;
+  top: 1px;
+  padding: 4px 14px 5px;
+  border: 1px solid var(--c-border);
+  border-bottom: 0;
+  background: linear-gradient(180deg, #f7f7f7, #e6e6e6);
+  font-family: var(--font-hei);
+  font-size: var(--fs-12);
+  font-weight: bold;
+  color: var(--c-text-sub);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.mg-tabbar__tab:hover {
+  color: var(--c-red);
+}
+
+.mg-tabbar__tab.is-active {
+  background: var(--c-white);
+  color: var(--c-red);
+  padding-bottom: 6px;
+}
+
+.mg-tabbar__tab-count {
+  margin-left: 4px;
+  font-family: var(--font-num);
+  font-size: var(--fs-10);
+  color: var(--c-text-faint);
+}
+
+/* ================= 3. 列表 ================= */
+
+.mg-list {
+  padding: 4px 8px 6px;
+}
+
+.mg-list__item {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 3px 0;
+  border-bottom: 1px dotted var(--c-divider);
+  font-size: var(--fs-13);
+  line-height: 1.5;
+}
+
+.mg-list__item:last-child {
+  border-bottom: 0;
+}
+
+.mg-list__bullet {
+  flex: 0 0 auto;
+  color: var(--c-red);
+  font-family: var(--font-num);
+  font-size: var(--fs-11);
+}
+
+.mg-list__text {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--c-text-sub);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.mg-list__item:hover .mg-list__text {
+  color: var(--c-red);
+}
+
+.mg-list__date {
+  flex: 0 0 auto;
+  font-family: var(--font-num);
+  font-size: var(--fs-12);
+  color: var(--c-text-muted);
+}
+
+/* 头条样式 */
+.mg-list__item--headline .mg-list__text {
+  font-family: var(--font-hei);
+  font-size: var(--fs-14);
+  font-weight: bold;
+  color: var(--c-red);
+}
+
+/* ================= 4. 角标 ================= */
+
+.mg-badge {
+  display: inline-block;
+  flex: 0 0 auto;
+  padding: 0 5px;
+  height: 17px;
+  line-height: 16px;
+  font-family: var(--font-hei);
+  font-size: var(--fs-11);
+  font-weight: bold;
+  color: #fff;
+  background: var(--c-red);
+  border: 1px solid var(--c-red-deep);
+  vertical-align: middle;
+}
+
+.mg-badge--gold {
+  background: var(--c-gold-deep);
+  border-color: #8a6a00;
+  color: #fff;
+}
+
+.mg-badge--navy {
+  background: var(--c-navy-light);
+  border-color: var(--c-navy-deep);
+}
+
+.mg-badge--green {
+  background: var(--c-green);
+  border-color: #0d4d20;
+}
+
+.mg-badge--outline {
+  background: var(--c-white);
+  color: var(--c-red);
+  border-color: var(--c-red);
+}
+
+.mg-badge--round {
+  border-radius: 8px;
+  padding: 0 7px;
+}
+
+/* ================= 5. 按钮 ================= */
+
+.mg-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 12px;
+  border: 1px solid var(--c-border-dark);
+  background: linear-gradient(180deg, #fefefe, #e8e8e8);
+  color: var(--c-text);
+  font-size: var(--fs-12);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.mg-btn:hover {
+  background: linear-gradient(180deg, #fff, #dcdcdc);
+  border-color: #7a7a7a;
+}
+
+.mg-btn:active {
+  background: linear-gradient(180deg, #dcdcdc, #efefef);
+  border-color: #6a6a6a;
+}
+
+.mg-btn:disabled {
+  color: var(--c-text-faint);
+  background: #f2f2f2;
+  border-color: var(--c-border-light);
+  cursor: not-allowed;
+}
+
+.mg-btn--primary {
+  background: linear-gradient(180deg, #d5232b, #a80000);
+  border-color: #7d0000;
+  color: #fff;
+  font-weight: bold;
+}
+
+.mg-btn--primary:hover {
+  background: linear-gradient(180deg, #e63b41, #bd0000);
+}
+
+.mg-btn--gold {
+  background: linear-gradient(180deg, #ffe08a, #d9a91c);
+  border-color: #9a7500;
+  color: #4a3400;
+  font-weight: bold;
+}
+
+.mg-btn--gold:hover {
+  background: linear-gradient(180deg, #ffeda8, #e6b423);
+}
+
+.mg-btn--lg {
+  height: 28px;
+  padding: 0 20px;
+  font-size: var(--fs-14);
+}
+
+.mg-btn--sm {
+  height: 18px;
+  padding: 0 8px;
+  font-size: var(--fs-11);
+}
+
+/* ================= 6. 数据表 ================= */
+
+.mg-table {
+  width: 100%;
+  border: 1px solid var(--c-border);
+  font-size: var(--fs-12);
+}
+
+.mg-table th {
+  padding: 4px 6px;
+  background: var(--c-panel-head);
+  border: 1px solid var(--c-border);
+  font-family: var(--font-hei);
+  font-size: var(--fs-12);
+  color: var(--c-navy);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.mg-table td {
+  padding: 4px 6px;
+  border: 1px solid var(--c-border-light);
+  color: var(--c-text-sub);
+  vertical-align: middle;
+}
+
+.mg-table tbody tr:nth-child(even) td {
+  background: #fafafa;
+}
+
+.mg-table tbody tr:hover td {
+  background: var(--c-red-tint);
+}
+
+.mg-table--compact td,
+.mg-table--compact th {
+  padding: 2px 5px;
+}
+
+/* ================= 7. 弹窗 ================= */
+
+.mg-modal__mask {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mg-modal {
+  min-width: 400px;
+  max-width: 760px;
+  max-height: 82vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--c-white);
+  border: 1px solid var(--c-navy-deep);
+  box-shadow: var(--shadow-pop);
+}
+
+.mg-modal__head {
+  height: 28px;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  padding: 0 6px 0 8px;
+  background: var(--c-panel-head-red);
+  color: #fff;
+  font-family: var(--font-hei);
+  font-size: var(--fs-13);
+  font-weight: bold;
+}
+
+.mg-modal__title {
+  flex: 1 1 auto;
+}
+
+.mg-modal__close {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-family: var(--font-num);
+  font-size: var(--fs-12);
+  line-height: 1;
+}
+
+.mg-modal__close:hover {
+  background: #fff;
+  color: var(--c-red);
+}
+
+.mg-modal__body {
+  flex: 1 1 auto;
+  overflow: auto;
+  padding: 12px;
+  font-size: var(--fs-13);
+  line-height: 1.75;
+}
+
+.mg-modal__foot {
+  flex: 0 0 auto;
+  padding: 8px;
+  border-top: 1px solid var(--c-border-light);
+  background: #f7f7f7;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* ================= 8. 走马灯 ================= */
+
+.mg-marquee {
+  display: flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 6px;
+  background: var(--c-red-tint);
+  border: 1px solid #f0c8c8;
+  overflow: hidden;
+  font-size: var(--fs-12);
+}
+
+.mg-marquee__label {
+  flex: 0 0 auto;
+  margin-right: 8px;
+  padding: 0 5px;
+  height: 17px;
+  line-height: 16px;
+  background: var(--c-red);
+  color: #fff;
+  font-family: var(--font-hei);
+  font-size: var(--fs-11);
+  font-weight: bold;
+}
+
+.mg-marquee__viewport {
+  flex: 1 1 auto;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.mg-marquee__track {
+  display: inline-block;
+  white-space: nowrap;
+  animation: mg-marquee-scroll 42s linear infinite;
+  padding-left: 100%;
+}
+
+.mg-marquee:hover .mg-marquee__track {
+  animation-play-state: paused;
+}
+
+.mg-marquee__track a {
+  margin-right: 42px;
+  color: var(--c-text-sub);
+  font-size: var(--fs-12);
+}
+
+@keyframes mg-marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* ================= 9. 服务图标格 ================= */
+
+.mg-iconbox {
+  display: grid;
+  gap: 4px;
+}
+
+.mg-iconbox__cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 4px;
+  padding: 8px 4px 6px;
+  border: 1px solid transparent;
+  text-align: center;
+}
+
+.mg-iconbox__cell:hover {
+  border-color: var(--c-border);
+  background: var(--c-red-tint);
+  text-decoration: none;
+}
+
+.mg-iconbox__icon {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+}
+
+.mg-iconbox__label {
+  font-size: var(--fs-12);
+  color: var(--c-text-sub);
+  line-height: 1.3;
+}
+
+.mg-iconbox__cell:hover .mg-iconbox__label {
+  color: var(--c-red);
+}
+
+/* ================= 10. 统计数字 ================= */
+
+.mg-stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  font-size: var(--fs-13);
+}
+
+.mg-stat__icon {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+}
+
+.mg-stat__label {
+  flex: 1 1 auto;
+  color: var(--c-text-sub);
+}
+
+.mg-stat__value {
+  flex: 0 0 auto;
+  font-family: var(--font-num);
+  font-size: var(--fs-18);
+  font-weight: bold;
+  color: var(--c-red);
+  letter-spacing: 0.5px;
+}
+
+.mg-stat__unit {
+  font-family: var(--font-song);
+  font-size: var(--fs-12);
+  color: var(--c-text-muted);
+  font-weight: normal;
+  margin-left: 2px;
+}
+
+/* ================= 11. 面包屑 ================= */
+
+.mg-crumbs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 10px;
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-bottom: 0;
+  font-size: var(--fs-12);
+  color: var(--c-text-muted);
+}
+
+.mg-crumbs__home {
+  color: var(--c-link);
+}
+
+/* ================= 12. 分页 ================= */
+
+.mg-pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 10px 0;
+  font-size: var(--fs-12);
+}
+
+.mg-pager__btn {
+  min-width: 21px;
+  height: 21px;
+  padding: 0 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--c-border);
+  background: var(--c-white);
+  color: var(--c-link);
+  font-family: var(--font-num);
+}
+
+.mg-pager__btn:hover {
+  border-color: var(--c-red);
+  color: var(--c-red);
+  text-decoration: none;
+}
+
+.mg-pager__btn.is-active {
+  background: var(--c-red);
+  border-color: var(--c-red-deep);
+  color: #fff;
+  font-weight: bold;
+}
+
+.mg-pager__btn.is-disabled {
+  color: var(--c-text-faint);
+  cursor: not-allowed;
+}
+
+.mg-pager__info {
+  margin: 0 8px;
+  color: var(--c-text-muted);
+}
+
+/* ================= 13. 表单 ================= */
+
+.mg-form__row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.mg-form__label {
+  flex: 0 0 96px;
+  padding-top: 3px;
+  text-align: right;
+  color: var(--c-text-sub);
+  font-size: var(--fs-13);
+}
+
+.mg-form__label .mg-required {
+  color: var(--c-red);
+  margin-right: 2px;
+}
+
+.mg-form__control {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.mg-input,
+.mg-select,
+.mg-textarea {
+  width: 100%;
+  padding: 3px 5px;
+  border: 1px solid var(--c-border-dark);
+  background: var(--c-white);
+  font-size: var(--fs-13);
+  color: var(--c-text);
+}
+
+.mg-input:disabled,
+.mg-select:disabled,
+.mg-textarea:disabled {
+  background: #f0f0f0;
+  color: var(--c-text-faint);
+}
+
+.mg-textarea {
+  resize: vertical;
+  min-height: 76px;
+  line-height: 1.6;
+}
+
+.mg-form__hint {
+  margin-top: 2px;
+  font-size: var(--fs-11);
+  color: var(--c-text-faint);
+}
+
+.mg-form__error {
+  margin-top: 2px;
+  font-size: var(--fs-11);
+  color: var(--c-red);
+}
+
+.mg-radio-group,
+.mg-check-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  padding-top: 3px;
+}
+
+.mg-radio-group label,
+.mg-check-group label {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: var(--fs-13);
+  cursor: pointer;
+}
+
+/* ================= 14. 进度条 ================= */
+
+.mg-progress {
+  height: 14px;
+  border: 1px solid var(--c-border-dark);
+  background: #f0f0f0;
+  overflow: hidden;
+}
+
+.mg-progress__bar {
+  height: 100%;
+  background: repeating-linear-gradient(
+    45deg,
+    #2b8a3e,
+    #2b8a3e 6px,
+    #37a04c 6px,
+    #37a04c 12px
+  );
+  transition: width 0.35s linear;
+}
+
+.mg-progress__bar--red {
+  background: repeating-linear-gradient(45deg, #c00, #c00 6px, #e02020 6px, #e02020 12px);
+}
+
+/* ================= 15. 提示条 ================= */
+
+.mg-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 6px 8px;
+  border: 1px solid #f0d9a0;
+  background: #fffbe8;
+  font-size: var(--fs-12);
+  line-height: 1.6;
+  color: #6b5200;
+}
+
+.mg-alert--red {
+  border-color: #f0c0c0;
+  background: var(--c-red-tint);
+  color: var(--c-red-deep);
+}
+
+.mg-alert--gray {
+  border-color: var(--c-border);
+  background: #f7f7f7;
+  color: var(--c-text-muted);
+}
+
+.mg-alert__icon {
+  flex: 0 0 auto;
+  font-family: var(--font-num);
+  font-weight: bold;
+}
+
+/* ================= 16. 彩蛋容器 ================= */
+
+.mg-easter-toast {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: var(--z-easter);
+  max-width: 340px;
+  padding: 8px 10px;
+  background: var(--c-navy-deep);
+  border: 1px solid var(--c-gold);
+  color: var(--c-gold-light);
+  font-size: var(--fs-12);
+  line-height: 1.7;
+  box-shadow: var(--shadow-pop);
+}
+
+.mg-easter-toast__title {
+  font-family: var(--font-hei);
+  font-weight: bold;
+  color: var(--c-gold);
+  margin-bottom: 3px;
+}
+
+/* ================= 17. 加载骨架（古早版：转圈 GIF 的 CSS 复刻） ================= */
+
+.mg-loading {
+  padding: 24px;
+  text-align: center;
+  color: var(--c-text-muted);
+  font-size: var(--fs-12);
+}
+
+.mg-loading__spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  vertical-align: -3px;
+  border: 2px solid #d0d0d0;
+  border-top-color: var(--c-red);
+  border-radius: 50%;
+  animation: mg-spin 0.9s linear infinite;
+}
+
+@keyframes mg-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ================= 18. 分栏布局工具 ================= */
+
+.mg-cols {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.mg-col {
+  min-width: 0;
+}
+
+.mg-col--left {
+  flex: 0 0 218px;
+}
+
+.mg-col--main {
+  flex: 1 1 auto;
+}
+
+.mg-col--right {
+  flex: 0 0 300px;
+}
