@@ -73,6 +73,12 @@ export const ASSETS = {
     '/assets/photos/press-2.jpg',
     '/assets/photos/press-3.jpg',
   ],
+  /** 站标栏左侧背景：国会大厦 + 星条旗实拍（680×264，CSS 裁到约 340×132） */
+  headerCapitol: '/assets/photos/header-capitol.jpg',
+  /** 站标栏右侧背景：自由女神像实拍（560×352，CSS 裁到约 280×132） */
+  headerLiberty: '/assets/photos/header-liberty.jpg',
+  /** 站标栏中央：美国总统徽记官方版本（512×512 透明 PNG） */
+  presidentialSeal: '/assets/photos/presidential-seal.png',
 } as const;
 
 /* ================= II. 辅助函数 ================= */
@@ -90,9 +96,9 @@ export const ASSETS = {
  *
  * @example
  * ```ts
- * asset('assets/hero-1.svg')   // '/assets/hero-1.svg'
- * asset('./assets/hero-1.svg') // '/assets/hero-1.svg'
- * asset('/assets/hero-1.svg')  // '/assets/hero-1.svg'
+ * asset('assets/photos/hero-1.jpg')   // '/assets/photos/hero-1.jpg'
+ * asset('./assets/photos/hero-1.jpg') // '/assets/photos/hero-1.jpg'
+ * asset('/assets/photos/hero-1.jpg')  // '/assets/photos/hero-1.jpg'
  * ```
  */
 export function asset(p: string): string {

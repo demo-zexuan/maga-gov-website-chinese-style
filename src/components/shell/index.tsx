@@ -19,7 +19,7 @@
  * @author zexuan.peng <pengzexuan2001@gmail.com>
  * @created 2026-09-30
  */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, navigate, useIsActive, useRoute } from '@/router';
 import { useApp } from '@/app-context';
 import {
@@ -129,7 +129,7 @@ export function TopUtilityBar() {
 
           {/* 长者模式 / 无障碍：真实政务网站必备，这里做了但效果夸张 */}
           <a
-            className={`mg-topbar__link${elderMode ? ' is-strong' : ''}`}
+            className={`mg-topbar__link mg-topbar__link--mode${elderMode ? ' is-strong' : ''}`}
             href="#/"
             onClick={(e) => {
               e.preventDefault();
@@ -142,9 +142,9 @@ export function TopUtilityBar() {
           >
             长者模式
           </a>
-          <span className="mg-topbar__sep">|</span>
+          <span className="mg-topbar__sep mg-topbar__sep--mode">|</span>
           <a
-            className={`mg-topbar__link${a11yMode ? ' is-strong' : ''}`}
+            className={`mg-topbar__link mg-topbar__link--mode${a11yMode ? ' is-strong' : ''}`}
             href="#/"
             onClick={(e) => {
               e.preventDefault();
@@ -174,9 +174,13 @@ export function TopUtilityBar() {
 
           {/* 服务热线：古早网站的镇站之宝 */}
           <span className="mg-topbar__hotline">
-            <span style={{ fontSize: 16 }}>☎</span>
-            <span>
-              服务热线：{SITE.hotline}
+            <span className="mg-topbar__hotline-icon" aria-hidden>
+              ☎
+            </span>
+            <span className="mg-topbar__hotline-body">
+              {/* 号码与文字标签拆成两个节点，窄屏才能只留号码 */}
+              <span className="mg-topbar__hotline-label">服务热线：</span>
+              <span className="mg-topbar__hotline-num">{SITE.hotline}</span>
               <small>{SITE.hotlineNote}</small>
             </span>
           </span>
@@ -261,13 +265,62 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
 
 /* ================= 2. 站标横幅 ================= */
 
+/**
+ * 顶栏两侧的实拍图，加载失败时自动退回手绘矢量场景
+ *
+ * I. 为什么要兜底
+ *
+ * 1. 参考图的顶栏左右两侧是真实照片（国会山 + 星条旗 / 自由女神），
+ *    实拍的照片质感是这个版式的关键，矢量剪影替代不了。
+ * 2. 但照片是脚本从外部抓取后入仓的，构建必须离线可重现；万一某个
+ *    部署环境漏了图片，这里必须还能退回 SVG，不能出现破图框。
+ *
+ * II. 实现
+ *
+ * 1. 用 onError 切到 fallback，而不是 CSS background —— 这样加载失败
+ *    可以被 React 感知，也能让无障碍读屏拿到 alt。
+ * 2. 图片一律 aria-hidden：它们是纯装饰，标题已提供全部语义。
+ */
+function HeaderPhoto({
+  src,
+  fallback,
+  className,
+}: {
+  src: string;
+  fallback: React.ReactNode;
+  className: string;
+}) {
+  const [failed, setFailed] = useState(false);
+  return (
+    <div className={className}>
+      {failed ? (
+        fallback
+      ) : (
+        <img src={src} alt="" aria-hidden onError={() => setFailed(true)} />
+      )}
+    </div>
+  );
+}
+
 export function SiteHeader() {
   return (
     <div className="mg-header">
       <div className="mg-header__inner">
-        <FlagScene className="mg-header__flag" />
-        <GreatSeal className="mg-header__seal" />
-        <LibertyScene className="mg-header__liberty" />
+        {/* 左侧：国会山 + 星条旗实拍；失败则退回 FlagScene 矢量场景 */}
+        <HeaderPhoto
+          className="mg-header__side mg-header__side--left"
+          src="/assets/photos/header-capitol.jpg"
+          fallback={<FlagScene className="mg-header__flag" />}
+        />
+
+        {/* 右侧：自由女神实拍；失败则退回 LibertyScene 矢量场景 */}
+        <HeaderPhoto
+          className="mg-header__side mg-header__side--right"
+          src="/assets/photos/header-liberty.jpg"
+          fallback={<LibertyScene className="mg-header__liberty" />}
+        />
+
+        <SealMark />
 
         <div className="mg-header__center">
           <h1 className="mg-header__title">{SITE.title}</h1>
@@ -292,13 +345,55 @@ export function SiteHeader() {
   );
 }
 
+/** 中央国徽：优先用官方徽记位图，缺失时退回手绘 SVG */
+function SealMark() {
+  const [failed, setFailed] = useState(false);
+  if (failed) return <GreatSeal className="mg-header__seal" />;
+  return (
+    <img
+      className="mg-header__seal mg-header__seal--photo"
+      src="/assets/photos/presidential-seal.png"
+      alt="国徽"
+      onError={() => setFailed(true)}
+    />
+  );
+}
+
 /* ================= 3. 主导航 ================= */
 
 export function MainNav() {
   const { pushToast } = useApp();
+  const { path } = useRoute();
+  const [open, setOpen] = useState(false);
+
+  // 路由变化后自动收起：否则手机上点完栏目菜单还挂着，挡住内容
+  useEffect(() => {
+    setOpen(false);
+  }, [path]);
+
   return (
     <nav className="mg-nav">
-      <div className="mg-nav__inner">
+      {/*
+        移动端汉堡按钮。桌面端由 CSS 隐藏（display:none），
+        因此不影响 ≥1024px 的参考图版式。
+      */}
+      <button
+        type="button"
+        className={`mg-nav__toggle${open ? ' is-open' : ''}`}
+        aria-expanded={open}
+        aria-controls="mg-mainnav"
+        onClick={() => setOpen((v) => !v)}
+      >
+        <span className="mg-nav__toggle-bars" aria-hidden>
+          {open ? '✕' : '☰'}
+        </span>
+        <span className="mg-nav__toggle-text">栏目导航</span>
+        <span className="mg-nav__toggle-hint" aria-hidden>
+          {open ? '点击收起' : '点击展开'}
+        </span>
+      </button>
+
+      <div id="mg-mainnav" className={`mg-nav__inner${open ? ' is-open' : ''}`}>
         {NAV_ITEMS_RUNTIME.map((item) => (
           <NavLinkItem key={item.path} item={item} onTip={pushToast} />
         ))}

@@ -1,0 +1,462 @@
+/**
+ * service 模块响应式适配
+ *
+ * I. 归属
+ *
+ * 本文件由 service 模块负责人维护，只允许写该模块自己的选择器。
+ * 加载顺序在 styles/responsive.css（Lead 的地基）之后，因此可以覆盖地基。
+ *
+ * II. 断点约定（与地基一致，不要新增断点）
+ *
+ * 1. `max-width: 1399px` 紧凑桌面
+ * 2. `max-width: 1023px` 平板
+ * 3. `max-width: 767px`  手机
+ * 4. `max-width: 420px`  小屏手机
+ *
+ * III. 硬约束
+ *
+ * 1. 不得影响 ≥1400px 的桌面版式（参考图还原区）。
+ * 2. 不得出现横向滚动：手机端任何元素都不应超出 100vw。
+ * 3. 表格类内容必须可横向滚动查看，不允许被裁切。
+ * 4. 出现内容截断时优先"换行/堆叠"，不要用 `display:none` 藏掉信息，
+ *    除非该信息确实是纯装饰。
+ *
+ * IV. 本文件覆盖的页面
+ *
+ * 1. 办事大厅 `/service`（横幅 / 工具条 / 服务卡片网格 / 常见问题 / 网点）
+ * 2. 办事指南 `/service/detail/:id`（事项头部 / 步骤条 / 材料表 / 办理信息表 / 假办理流程弹窗）
+ * 3. 进度查询 `/service/track`（表单 / 99% 进度表盘 / 结果表 / 查询记录表）
+ * 4. 办件公示 `/service/records`（统计条 / 筛选 / 9 列大表 / 分页）
+ *
+ * V. 特别注意
+ *
+ * 手机端 `.mg-form__row` 被地基改成纵向排列，但基类的 `align-items: flex-start`
+ * 在纵向弹性盒里会让子项退化为"内容宽度"，导致输入框只有 140px 左右 —— 因此本文件
+ * 在手机断点为模块内的表单行显式改为 `align-items: stretch`，让控件铺满一行。
+ *
+ * @module styles/responsive/service
+ * @author zexuan.peng <pengzexuan2001@gmail.com>
+ * @created 2026-09-30
+ */
+
+/* ============================================================
+   I. 表格横向滚动容器（全局生效，桌面无副作用）
+   ------------------------------------------------------------
+   桌面上容器可用宽度远大于 min-width，不会出现滚动条，版式与改造前一致；
+   窄屏时改为容器内部滚动，既保证页面不出现横向滚动，也保证表格列不被压扁。
+   ============================================================ */
+
+.mg-svc-scroll--material > .mg-table {
+  min-width: 660px;
+}
+
+.mg-svc-scroll--info > .mg-table {
+  min-width: 560px;
+}
+
+.mg-svc-scroll--flow > .mg-table {
+  min-width: 460px;
+}
+
+.mg-svc-scroll--track > .mg-table {
+  min-width: 520px;
+}
+
+/*
+ * 进度查询右栏的「本次查询记录」只有 3 列，容器本身仅约 284px 宽。
+ * 地基的 `.mg-table-scroll > .mg-table { min-width: 560px }` 是给宽表用的，
+ * 对这张窄表反而会在桌面上撑出横向滚动条，因此这里显式回落为不设下限。
+ */
+.mg-svc-scroll--log > .mg-table {
+  min-width: 0;
+}
+
+.mg-svc-scroll--records > .mg-table {
+  min-width: 920px;
+}
+
+/* ============================================================
+   II. ≤1399px 紧凑桌面：卡片与横幅略微收紧
+   ============================================================ */
+
+@media (max-width: 1399px) {
+  .mg-svc-banner {
+    gap: 0 22px;
+  }
+
+  .mg-svc-cards {
+    gap: 6px;
+  }
+
+  .mg-svc-card {
+    padding: 6px;
+  }
+
+  .mg-svc-detail__head {
+    gap: 8px;
+  }
+}
+
+/* ============================================================
+   III. ≤1023px 平板：卡片两列、筛选两列、统计条紧凑
+   ============================================================ */
+
+@media (max-width: 1023px) {
+  /* 服务卡片 3 列 → 2 列（主栏此时已占满整行，两列宽度充裕） */
+  .mg-svc-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mg-svc-banner {
+    gap: 0 18px;
+  }
+
+  .mg-svc-banner__num {
+    font-size: var(--fs-28);
+  }
+
+  .mg-svc-detail__title {
+    font-size: var(--fs-20);
+  }
+
+  .mg-svc-detail__meta {
+    gap: 2px 14px;
+  }
+
+  /* 筛选条件两列排布 */
+  .mg-svc-filters .mg-form__row {
+    width: calc(50% - 9px);
+  }
+
+  .mg-svc-stats {
+    gap: 0 22px;
+  }
+
+  .mg-svc-stats__num {
+    font-size: var(--fs-24);
+  }
+}
+
+/* ============================================================
+   IV. ≤767px 手机：单列、表头置顶、表格横向滚
+   ============================================================ */
+
+@media (max-width: 767px) {
+  /* ---------- 表单：控件铺满一行，并加大点按区域 ---------- */
+
+  .mg-svc-filters .mg-form__row,
+  .mg-svc-filters .mg-form__control,
+  .mg-svc-filters .mg-form__label {
+    flex: 1 1 auto;
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .mg-svc-filters .mg-form__row {
+    align-items: stretch;
+  }
+
+  .mg-svc-filters .mg-form__label {
+    text-align: left;
+  }
+
+  .mg-svc-search .mg-input,
+  .mg-svc-filters .mg-input,
+  .mg-svc-filters .mg-select,
+  .mg-svc-track__no,
+  .mg-svc-captcha-row__input {
+    min-height: 32px;
+    font-size: var(--fs-15);
+  }
+
+  /* ---------- 办事大厅 ---------- */
+
+  .mg-svc-banner {
+    gap: 0 12px;
+    padding: 8px 10px;
+  }
+
+  .mg-svc-banner__item {
+    flex: 1 1 30%;
+    flex-wrap: wrap;
+    gap: 0 4px;
+  }
+
+  .mg-svc-banner__num {
+    font-size: var(--fs-24);
+  }
+
+  .mg-svc-banner__label {
+    font-size: var(--fs-11);
+    line-height: 1.35;
+  }
+
+  .mg-svc-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .mg-svc-search {
+    width: 100%;
+  }
+
+  .mg-svc-card__meta {
+    font-size: var(--fs-12);
+  }
+
+  /* ---------- 办事指南：头部由"左中右"改为"图标 + 标题 + 按钮"三行 ---------- */
+
+  .mg-svc-detail__head {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .mg-svc-detail__titlebox {
+    flex: 1 1 calc(100% - 56px);
+  }
+
+  .mg-svc-detail__title {
+    font-size: var(--fs-18);
+    line-height: 1.35;
+    margin-bottom: 4px;
+  }
+
+  .mg-svc-detail__meta {
+    flex-direction: column;
+    gap: 1px;
+    font-size: var(--fs-12);
+  }
+
+  /* 操作按钮不再挤在右侧窄栏，改为底部整行排列 */
+  .mg-svc-detail__cta {
+    flex: 1 1 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    padding-top: 6px;
+    border-top: 1px solid var(--c-divider);
+  }
+
+  .mg-svc-detail__cta .mg-btn {
+    flex: 1 1 auto;
+    min-height: 30px;
+  }
+
+  /* 大按钮独占一行，小按钮并排 */
+  .mg-svc-detail__cta .mg-btn--lg {
+    flex: 1 1 100%;
+    height: 34px;
+    font-size: var(--fs-15);
+  }
+
+  /* ---------- 步骤条：手机上折行 ----------
+     地基给的是 `flex: 1 1 50%`，但手机上面板内可用宽度约 360px，
+     两项各 50% 再加列间距刚好溢出，会变成"看似两列实则一行一项"。
+     这里改为明确的整行一项，流程顺序更清楚，也避免依赖间距的巧合。 */
+
+  .mg-steps {
+    gap: 8px 4px;
+    padding: 8px 0;
+  }
+
+  .mg-steps__item {
+    flex: 1 1 100%;
+  }
+
+  .mg-steps__num {
+    width: 22px;
+    height: 22px;
+    font-size: var(--fs-12);
+  }
+
+  .mg-steps__text {
+    font-size: var(--fs-12);
+    line-height: 1.45;
+  }
+
+  /* ---------- 表格：容器内横向滚动 ---------- */
+
+  .mg-table-scroll {
+    border: 1px solid var(--c-border-light);
+  }
+
+  .mg-table-scroll > .mg-table {
+    border: 0;
+  }
+
+  .mg-svc-scroll--material > .mg-table {
+    min-width: 620px;
+  }
+
+  /* ---------- 进度查询 ---------- */
+
+  .mg-svc-track__gauge {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    margin: 8px 0;
+  }
+
+  .mg-svc-track__percent {
+    font-size: var(--fs-34);
+    text-align: center;
+  }
+
+  .mg-svc-captcha-row {
+    flex-wrap: wrap;
+  }
+
+  .mg-svc-captcha-row__input {
+    flex: 1 1 110px;
+  }
+
+  .mg-svc-captcha {
+    display: flex;
+    align-items: center;
+    min-height: 32px;
+    font-size: var(--fs-16);
+  }
+
+  .mg-svc-track__actions {
+    gap: 6px;
+  }
+
+  .mg-svc-track__actions .mg-btn,
+  .mg-svc-filters__btns .mg-btn {
+    min-height: 30px;
+    padding: 0 14px;
+  }
+
+  .mg-svc-sample {
+    padding: 5px 8px;
+    font-size: var(--fs-12);
+  }
+
+  /* ---------- 办件公示：统计条与筛选堆叠 ---------- */
+
+  .mg-svc-stats {
+    gap: 0 14px;
+    padding: 8px 10px;
+  }
+
+  .mg-svc-stats__item {
+    flex: 1 1 45%;
+    gap: 0 4px;
+  }
+
+  .mg-svc-stats__num {
+    font-size: var(--fs-20);
+  }
+
+  .mg-svc-stats__label {
+    font-size: var(--fs-12);
+  }
+
+  .mg-svc-filters {
+    gap: 0 10px;
+  }
+
+  .mg-svc-filters .mg-form__row {
+    width: 100%;
+  }
+
+  .mg-svc-filters__btns {
+    width: 100%;
+    padding-top: 2px;
+    padding-bottom: 4px;
+  }
+
+  /* 表格横向滚动的提示：窄屏给容器加一条右侧渐隐边，暗示可以滑动 */
+  .mg-table-scroll {
+    background-image: linear-gradient(to left, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0));
+    background-repeat: no-repeat;
+    background-position: right center;
+    background-size: 12px 100%;
+    background-attachment: local;
+  }
+
+  /* ---------- 假办理流程弹窗 ---------- */
+
+  .mg-svc-flow__steps {
+    flex-wrap: wrap;
+  }
+
+  .mg-svc-flow__step {
+    flex: 1 1 100%;
+    justify-content: flex-start;
+    padding: 6px 8px;
+    border-right: 0;
+    border-bottom: 1px solid var(--c-border-light);
+  }
+
+  .mg-svc-flow__step:last-child {
+    border-bottom: 0;
+  }
+
+  .mg-svc-flow__foot {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .mg-svc-flow__foot-btns {
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .mg-svc-flow__foot-btns .mg-btn {
+    min-height: 30px;
+    padding: 0 14px;
+  }
+
+  .mg-svc-flow__receipt,
+  .mg-svc-receipt {
+    font-size: var(--fs-16);
+    letter-spacing: 1px;
+  }
+
+  .mg-svc-office__addr,
+  .mg-svc-office__remark,
+  .mg-svc-note,
+  .mg-svc-footnote {
+    font-size: var(--fs-12);
+  }
+
+  .mg-svc-quip {
+    font-size: var(--fs-13);
+  }
+}
+
+/* ============================================================
+   V. ≤420px 小屏手机：进一步压缩数字与标题
+   ============================================================ */
+
+@media (max-width: 420px) {
+  .mg-svc-banner__num {
+    font-size: var(--fs-20);
+  }
+
+  .mg-svc-banner__label {
+    font-size: var(--fs-10);
+  }
+
+  .mg-svc-detail__title {
+    font-size: var(--fs-16);
+  }
+
+  .mg-svc-stats__num {
+    font-size: var(--fs-18);
+  }
+
+  .mg-svc-track__percent {
+    font-size: var(--fs-28);
+  }
+
+  .mg-svc-captcha {
+    letter-spacing: 3px;
+    padding: 2px 8px;
+  }
+}

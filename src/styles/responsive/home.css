@@ -1,0 +1,374 @@
+/**
+ * home 模块响应式适配
+ *
+ * I. 归属
+ *
+ * 本文件由 home 模块负责人维护，只允许写该模块自己的选择器。
+ * 加载顺序在 styles/responsive.css（Lead 的地基）之后，因此可以覆盖地基。
+ *
+ * II. 断点约定（与地基一致，不要新增断点）
+ *
+ * 1. `max-width: 1399px` 紧凑桌面
+ * 2. `max-width: 1023px` 平板
+ * 3. `max-width: 767px`  手机
+ * 4. `max-width: 420px`  小屏手机
+ *
+ * III. 硬约束
+ *
+ * 1. 不得影响 ≥1400px 的桌面版式（参考图还原区）。
+ * 2. 不得出现横向滚动：手机端任何元素都不应超出 100vw。
+ * 3. 表格类内容必须可横向滚动查看，不允许被裁切。
+ * 4. 出现内容截断时优先"换行/堆叠"，不要用 `display:none` 藏掉信息，
+ *    除非该信息确实是纯装饰。
+ *
+ * IV. 两个必须显式重写的坑
+ *
+ * 1. 地基在 ≤767 把 `.mg-grid--*` 从 grid 改成 `display:flex` 单列，
+ *    首页「热门服务」用的是 `.mg-iconbox.mg-grid--4`，会因此塌成一列长条。
+ *    本文件在 ≤1023 用 `.mg-home__hotgrid` 显式改回网格。
+ * 2. 本文件在地基之后加载，同优先级下**永远赢**。因此地基在更窄断点写的规则
+ *    （例如 ≤1023 的「侧栏各占 50%」）必须在更窄的断点里重新声明，
+ *    否则会被本文件较宽断点的规则反向覆盖。
+ *
+ * @module styles/responsive/home
+ * @author zexuan.peng <pengzexuan2001@gmail.com>
+ * @created 2026-09-30
+ */
+
+/* ============================================================
+   I. ≤1399px 紧凑桌面：侧栏收窄，让中栏留出余量
+   ============================================================ */
+
+@media (max-width: 1399px) {
+  .mg-home__left {
+    flex: 0 0 200px;
+  }
+
+  .mg-home__right {
+    flex: 0 0 270px;
+  }
+
+  .mg-home__bottom-left {
+    flex: 0 0 320px;
+  }
+
+  .mg-home__bottom-right {
+    flex: 0 0 280px;
+  }
+
+  /* 右栏窄了，人物横幅的图片同步收一点，避免挤压文字 */
+  .mg-home__trump-img {
+    flex: 0 0 92px;
+    width: 92px;
+  }
+}
+
+/* ============================================================
+   II. ≤1023px 平板：主栏满宽 + 左右侧栏并排两列
+   ============================================================ */
+
+@media (max-width: 1023px) {
+  /*
+   * 中栏满宽后，轮播与头条区改为上下结构。
+   * 若继续并排，轮播会被压成 46% 宽的竖条，标题浮层会盖住大半张图。
+   */
+  .mg-home__stage {
+    flex-direction: column;
+  }
+
+  .mg-home__stage > .mg-home__carousel {
+    flex: 0 0 auto;
+    width: 100%;
+    min-height: 320px;
+  }
+
+  .mg-home__stage-right {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  /* 侧栏：左栏与右栏并排两列（地基已给，此处显式重申以免被上一段覆盖） */
+  .mg-home__left,
+  .mg-home__right {
+    flex: 1 1 calc(50% - 4px);
+    order: 2;
+  }
+
+  /* 底部：中栏（政务公开等）满宽在前，左右两块并排在后 */
+  .mg-home__bottom-center {
+    flex: 1 1 100%;
+    order: 1;
+  }
+
+  .mg-home__bottom-left,
+  .mg-home__bottom-right {
+    flex: 1 1 calc(50% - 4px);
+    order: 2;
+  }
+
+  /* 热门服务：显式改回 4 列网格（地基在 ≤767 会把它变成 flex 单列） */
+  .mg-home__hotgrid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .mg-home__hotgrid > * {
+    width: auto;
+  }
+
+  /* 自建选项卡容器：还原地基对 .mg-tabbar 的换行适配 */
+  .mg-home__tabbar {
+    height: auto;
+    min-height: 28px;
+    flex-wrap: wrap;
+    padding: 4px 28px 0 4px;
+  }
+
+  .mg-home__tab-close {
+    top: 4px;
+    right: 4px;
+  }
+
+  /* 地方分站：地图与州名标签之间留出间距 */
+  .mg-home__local-map {
+    margin-bottom: 6px;
+  }
+
+  .mg-home__states {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ============================================================
+   III. ≤767px 手机：全部单列
+   ============================================================ */
+
+@media (max-width: 767px) {
+  /* ---------- 主体：中栏 → 左栏 → 右栏，中栏内部轮播在最前 ---------- */
+
+  .mg-home__left,
+  .mg-home__right {
+    flex: 1 1 100%;
+  }
+
+  .mg-home__stage {
+    flex-direction: column;
+  }
+
+  .mg-home__stage > .mg-home__carousel {
+    order: 1;
+    min-height: 200px;
+  }
+
+  .mg-home__stage-right {
+    order: 2;
+    width: 100%;
+  }
+
+  /* ---------- 轮播：压扁浮层，别盖住整张图 ---------- */
+
+  .mg-home__carousel-caption {
+    bottom: 20px;
+    padding: 4px 8px;
+  }
+
+  .mg-home__carousel-title {
+    font-size: var(--fs-14);
+    line-height: 1.3;
+  }
+
+  .mg-home__carousel-sub {
+    font-size: var(--fs-11);
+    line-height: 1.35;
+  }
+
+  .mg-home__carousel-dots {
+    bottom: 4px;
+    gap: 5px;
+  }
+
+  .mg-home__carousel-dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .mg-home__carousel-nav--prev {
+    left: 4px;
+  }
+
+  .mg-home__carousel-nav--next {
+    right: 4px;
+  }
+
+  /* ---------- 头条区 ---------- */
+
+  .mg-home__bigbadge {
+    width: 40px;
+    height: 40px;
+    font-size: var(--fs-14);
+  }
+
+  .mg-home__topnews-title {
+    font-size: var(--fs-18);
+  }
+
+  /* 各类说明小字在窄屏行距放宽，避免连成一片 */
+  .mg-home__topnews-note,
+  .mg-home__stat-note,
+  .mg-home__panel-note,
+  .mg-home__banner-note,
+  .mg-home__app-note,
+  .mg-home__counter-note {
+    line-height: 1.45;
+  }
+
+  /* ---------- 底部：单列 ---------- */
+
+  .mg-home__bottom-left,
+  .mg-home__bottom-right {
+    flex: 1 1 100%;
+  }
+
+  .mg-home__bottom-center {
+    flex-direction: column;
+  }
+
+  /* ---------- 各模块内部 ---------- */
+
+  /* 热门服务：4 列不变，图标与字号缩小一档 */
+  .mg-home__hotgrid .mg-iconbox__icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .mg-home__hotgrid .mg-iconbox__label {
+    font-size: var(--fs-11);
+  }
+
+  /* 便民服务直通车：5 列 → 4 列 */
+  .mg-home__direct {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  /* 网上调查：标签列收窄，把宽度让给进度条 */
+  .mg-home__survey-label {
+    flex: 0 0 56px;
+  }
+
+  .mg-home__survey-pct {
+    flex: 0 0 34px;
+  }
+
+  .mg-home__survey-bar .mg-progress {
+    height: 12px;
+  }
+
+  /* 右栏：人物横幅与二维码同步收窄 */
+  .mg-home__trump {
+    height: 82px;
+  }
+
+  .mg-home__trump-img {
+    flex: 0 0 84px;
+    width: 84px;
+  }
+
+  .mg-home__trump-title {
+    font-size: var(--fs-15);
+  }
+
+  .mg-home__advice {
+    padding: 8px 10px;
+  }
+
+  .mg-home__advice-title {
+    font-size: var(--fs-16);
+    letter-spacing: 1px;
+  }
+
+  .mg-home__app-qr-wrap {
+    flex: 0 0 74px;
+  }
+
+  .mg-home__app-qr {
+    width: 62px;
+    height: 62px;
+  }
+
+  .mg-home__counter-digit {
+    width: 13px;
+    height: 18px;
+    line-height: 18px;
+    font-size: var(--fs-12);
+  }
+
+  /* 下载排行：序号列不能挤掉标题 */
+  .mg-home__rank {
+    padding: 4px 6px 6px;
+  }
+
+  .mg-home__rank-no {
+    flex: 0 0 14px;
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+  }
+}
+
+/* ============================================================
+   IV. ≤420px 小屏手机
+   ============================================================ */
+
+@media (max-width: 420px) {
+  .mg-home__stage > .mg-home__carousel {
+    min-height: 170px;
+  }
+
+  /* 热门服务 3 列 × 3 行，保证每格仍可点 */
+  .mg-home__hotgrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .mg-home__direct {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .mg-home__states {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mg-home__topnews-title {
+    font-size: var(--fs-16);
+  }
+
+  .mg-home__bigbadge {
+    width: 34px;
+    height: 34px;
+    font-size: var(--fs-12);
+  }
+
+  .mg-home__survey-label {
+    flex: 0 0 52px;
+    font-size: var(--fs-11);
+  }
+
+  .mg-home__trump-img {
+    flex: 0 0 74px;
+    width: 74px;
+  }
+
+  .mg-home__app-qr-wrap {
+    flex: 0 0 66px;
+  }
+
+  .mg-home__app-qr {
+    width: 54px;
+    height: 54px;
+  }
+
+  .mg-home__counter-digit {
+    width: 12px;
+    height: 17px;
+    line-height: 17px;
+  }
+}

@@ -1,0 +1,817 @@
+/**
+ * 响应式地基
+ *
+ * I. 设计立场
+ *
+ * 1. 桌面端（≥1400px）是"参考图还原模式"：版式、字号、留白一律不动，
+ *    这是本项目的核心诉求，任何响应式规则都不得影响该区间。
+ * 2. 以下逐级降级，目标不是"变成现代响应式网站"，而是**让古早政务网站在
+ *    小屏上依然能用**：信息密度保留、面板结构保留、只折叠栏数与缩放尺寸。
+ * 3. 手机端不追求像素级还原（那不可能），追求的是：无横向滚动、无内容截断、
+ *    每一个栏目都能点进去、每一张表都能看全。
+ *
+ * II. 断点
+ *
+ * - `≤1399px` 紧凑桌面：侧栏收窄，容器随视口
+ * - `≤1023px` 平板：三栏折叠为「主栏 + 侧栏并排两列」，导航转汉堡菜单
+ * - `≤767px`  手机：全部单列，导航转汉堡菜单，表格横向可滚
+ *
+ * III. 归属
+ *
+ * 本文件由 Lead 维护，负责外壳与通用组件。各业务模块的专属适配放在
+ * `src/styles/responsive/<module>.css`，由各模块负责人维护，加载在本文件之后。
+ *
+ * @module styles/responsive
+ * @author zexuan.peng <pengzexuan2001@gmail.com>
+ * @created 2026-09-30
+ */
+
+/* ============================================================
+   I. 通用：容器、图片、表格、溢出
+   ============================================================ */
+
+/* 页面基础留白随视口收缩 */
+.mg-page,
+.mg-home {
+  padding: 8px;
+}
+
+/* 全站图片一律不溢出容器 —— 实拍照片宽度不一时靠这条兜底 */
+.mg-container img {
+  max-width: 100%;
+  height: auto;
+}
+
+/*
+ * 数据表横向滚动
+ *
+ * I. 用法
+ *
+ * 模块在自己的 JSX 里把宽表包一层 `.mg-table-scroll`，窄屏即可横滑查看。
+ * 列宽由各模块自己用 `min-width` 定（不同表列数差别很大，统一值没有意义）。
+ *
+ * II. 为什么下限只在窄屏生效
+ *
+ * 早期版本在这里无条件写了 `min-width: 560px`，结果**在桌面上**反噬了
+ * 那些本来就窄的表（例如进度查询右栏 282px 的记录表会被撑到 560px，
+ * 凭空多出一条内部滚动条）。因此该下限只在 ≤1023 生效，且模块可用
+ * 更具体的 `min-width` 覆盖。
+ */
+.mg-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 1023px) {
+  .mg-table-scroll > .mg-table {
+    min-width: 560px;
+  }
+}
+
+/* 长英文/长数字不撑破布局 */
+.mg-container {
+  overflow-wrap: break-word;
+}
+
+/* ============================================================
+   II. ≤1399px 紧凑桌面
+   ============================================================ */
+
+@media (max-width: 1399px) {
+  .mg-header__center {
+    padding: 0 260px;
+  }
+
+  .mg-home__bottom-left {
+    flex: 0 0 320px;
+  }
+
+  /*
+   * 主导航压缩 + 可横滑
+   *
+   * 11 个栏目在桌面是固定内边距，总宽约 1272px。汉堡菜单只在 ≤1279px 生效，
+   * 因此在 1280~1399 这段"中等桌面"里栏目会被挤到超出视口，把整页撑宽。
+   * 这里先压缩内边距，并允许导航条自身横滑兜底 —— 滚动条隐藏，
+   * 触控板/触屏可滑动，所有栏目仍然可达。
+   */
+  .mg-nav__inner {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+  }
+
+  .mg-nav__inner::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mg-nav__item {
+    padding: 0 18px;
+  }
+}
+/* ============================================================
+   III. ≤1279px 导航切换为汉堡菜单
+
+   11 个栏目在桌面是定宽排列，总宽约 1272px。若汉堡菜单只在 ≤1023 生效，
+   1280px 以下就会先撞上导航溢出（栏目把整页撑宽），形成一段死区。
+   因此把「导航形态」的切换点单独提到 1279px，与下面的「布局折叠（≤1023）」
+   解耦：中等宽度下仍然保留完整的多栏布局，只是导航换成菜单。
+   ============================================================ */
+
+@media (max-width: 1279px) {
+  /* ---------- 顶部工具条：折成两行，隐藏次要信息 ---------- */
+
+  .mg-topbar {
+    height: auto;
+    min-height: var(--topbar-height);
+    line-height: 1.5;
+  }
+
+  .mg-topbar__inner {
+    flex-wrap: wrap;
+    padding: 4px 10px;
+    gap: 4px 10px;
+  }
+
+  .mg-topbar__left {
+    gap: 8px;
+    font-size: var(--fs-11);
+  }
+
+  /* 农历与天气是可读性最低的两项，小屏优先舍弃 */
+  .mg-topbar__left > .mg-topbar__sep,
+  .mg-topbar__weather,
+  .mg-topbar__left > span:nth-child(2),
+  .mg-topbar__left > span:nth-child(3) {
+    display: none;
+  }
+
+  .mg-topbar__right {
+    margin-left: auto;
+    gap: 6px;
+  }
+
+  .mg-topbar__hotline small {
+    display: none;
+  }
+
+  .mg-topbar__hotline {
+    font-size: var(--fs-12);
+  }
+
+  .mg-topsearch input {
+    width: 96px;
+  }
+
+  /* ---------- 主导航：横向可滚 + 汉堡展开 ---------- */
+
+  .mg-nav {
+    height: auto;
+  }
+
+  .mg-nav__toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    height: 40px;
+    padding: 0 12px;
+    border: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    background: transparent;
+    color: #eaf1fb;
+    font-family: var(--font-hei);
+    font-size: var(--fs-15);
+    font-weight: bold;
+    text-align: left;
+  }
+
+  .mg-nav__toggle-bars {
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .mg-nav__toggle-hint {
+    margin-left: auto;
+    font-family: var(--font-song);
+    font-size: var(--fs-11);
+    font-weight: normal;
+    color: #9db4d2;
+  }
+
+  .mg-nav__toggle.is-open {
+    background: var(--c-red);
+  }
+
+  .mg-nav__inner {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    padding: 0;
+  }
+
+  .mg-nav__inner.is-open {
+    display: flex;
+  }
+
+  .mg-nav__cell {
+    border-right: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .mg-nav__cell:first-child {
+    border-left: 0;
+  }
+
+  .mg-nav__item {
+    width: 100%;
+    height: 42px;
+    padding: 0 14px;
+  }
+
+  /* 下拉在移动端不再悬浮，改为内联展开的缩进列表 */
+  .mg-nav__sub {
+    position: static;
+    display: block;
+    border: 0;
+    box-shadow: none;
+    background: rgba(0, 0, 0, 0.18);
+    padding: 4px 0;
+  }
+
+  .mg-nav__sub a {
+    color: #cfe0f3;
+    padding: 6px 30px;
+  }
+
+  .mg-nav__cell.is-active::after {
+    display: none;
+  }
+}
+
+
+
+/* ============================================================
+   IV. ≤1023px 平板（布局折叠）
+   ============================================================ */
+
+@media (max-width: 1023px) {
+  /* ---------- 站标横幅：整体缩放 ---------- */
+
+  .mg-header {
+    height: 96px;
+  }
+
+  .mg-header__side--left {
+    width: 24%;
+    min-width: 120px;
+  }
+
+  .mg-header__side--right {
+    width: 20%;
+    min-width: 100px;
+  }
+
+  .mg-header__center {
+    padding: 0 110px;
+  }
+
+  .mg-header__title {
+    font-size: var(--fs-24);
+    letter-spacing: 1px;
+  }
+
+  .mg-header__subtitle {
+    font-size: var(--fs-11);
+  }
+
+  .mg-header__slogan {
+    font-size: var(--fs-10);
+    letter-spacing: 1px;
+  }
+
+  /* 国徽在窄屏上会压到标题，直接隐藏（它是纯装饰） */
+  .mg-header__seal {
+    display: none;
+  }
+
+  /* 右上角三连标语在小屏会叠字，转为底部一行 */
+  .mg-header__claims {
+    display: none;
+  }
+
+  /* ---------- 三栏 → 主栏 + 侧栏两列 ---------- */
+
+  .mg-layout-3col,
+  .mg-home__body {
+    flex-wrap: wrap;
+  }
+
+  .mg-layout-3col > .mg-layout__main,
+  .mg-home__center {
+    flex: 1 1 100%;
+    order: 1;
+  }
+
+  .mg-layout-3col > .mg-layout__left,
+  .mg-layout-3col > .mg-layout__right,
+  .mg-home__left,
+  .mg-home__right {
+    flex: 1 1 calc(50% - 4px);
+    order: 2;
+  }
+
+  /* 两栏布局：侧栏收窄但仍并排 */
+  .mg-layout-2col > .mg-layout__side {
+    flex: 0 0 200px;
+  }
+
+  /* 首页底部：左栏单独一行，中间两列并排 */
+  .mg-home__bottom {
+    flex-wrap: wrap;
+  }
+
+  .mg-home__bottom-left {
+    flex: 1 1 100%;
+  }
+
+  .mg-home__bottom-center {
+    flex: 1 1 100%;
+  }
+
+  .mg-home__bottom-right {
+    flex: 1 1 100%;
+  }
+
+  /* ---------- 页脚：纵向堆叠 ---------- */
+
+  .mg-footer__main {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .mg-footer__brand {
+    flex: 1 1 100%;
+  }
+
+  .mg-footer__slogan {
+    display: none;
+  }
+
+  /* ---------- 通用组件 ---------- */
+
+  .mg-tabbar {
+    height: auto;
+    flex-wrap: wrap;
+    padding: 4px 4px 0;
+    gap: 3px;
+  }
+
+  .mg-tabbar__tab {
+    top: 0;
+    padding: 5px 10px;
+    font-size: var(--fs-11);
+  }
+
+  .mg-modal {
+    min-width: 0;
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px);
+    max-height: 88vh;
+  }
+
+  .mg-article {
+    padding: 14px 16px 20px;
+  }
+
+  .mg-article__title {
+    font-size: var(--fs-20);
+  }
+
+  .mg-article__body {
+    font-size: var(--fs-15);
+    line-height: 1.95;
+  }
+
+  .mg-article__nav {
+    padding: 10px 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .mg-form__label {
+    flex: 0 0 76px;
+  }
+
+  .mg-iconbox {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .mg-steps {
+    flex-wrap: wrap;
+    gap: 8px 0;
+  }
+
+  .mg-steps__item {
+    flex: 1 1 33%;
+  }
+
+  .mg-steps__item::after {
+    display: none;
+  }
+
+  /* 条纹进度条在小屏太细，加高 */
+  .mg-progress {
+    height: 18px;
+  }
+}
+
+/* ============================================================
+   V. ≤767px 手机
+   ============================================================ */
+
+@media (max-width: 767px) {
+  body {
+    /* 单列后不再需要横向滚动兜底；任何溢出都是 bug */
+    overflow-x: hidden;
+  }
+
+  .mg-page,
+  .mg-home {
+    padding: 6px;
+  }
+
+  /* ---------- 顶栏：只保留日期 + 登录 + 搜索 ---------- */
+
+  .mg-topbar__inner {
+    padding: 4px 8px;
+  }
+
+  /*
+   * 右侧块必须自己也是一行且可换行
+   *
+   * `.mg-topbar__right` 是 flex 容器，但默认不换行。它的子项里搜索框是
+   * `flex-basis: 100%`，与热线强行挤在同一行 → 320px 下整条工具条被撑出
+   * 11px 横向滚动。这里让它独占一行并允许内部换行：
+   * 第 1 行搜索框、第 2 行热线。
+   */
+  .mg-topbar__right {
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+    margin-left: 0;
+    gap: 4px 10px;
+  }
+
+  /*
+   * 手机端工具条只留必要入口
+   *
+   * 1. English 与登录/注册在窄屏让位给搜索框（搜索是最高频操作）。
+   * 2. 但「长者模式 / 无障碍」必须保留 —— 无障碍声明页明确承诺了这两个
+   *    功能，在手机上把入口藏掉会让承诺落空（独立 QA 报告指出过这一点）。
+   *    它们各只有 4 个字，占用很小，却是本站无障碍能力的唯一入口。
+   */
+  .mg-topbar__right > .mg-topbar__link:not(.mg-topbar__link--mode),
+  .mg-topbar__right > .mg-topbar__sep:not(.mg-topbar__sep--mode) {
+    display: none;
+  }
+
+  .mg-topsearch {
+    order: 5;
+    flex: 1 1 100%;
+  }
+
+  .mg-topsearch input {
+    width: 100%;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .mg-topbar__hotline {
+    order: 6;
+    margin-left: auto;
+  }
+
+  /* ---------- 站标：只留标题 ---------- */
+
+  .mg-header {
+    height: 74px;
+  }
+
+  .mg-header__side--left,
+  .mg-header__side--right {
+    width: 22%;
+    min-width: 64px;
+    opacity: 0.85;
+  }
+
+  .mg-header__center {
+    padding: 0 56px;
+  }
+
+  .mg-header__title {
+    font-size: var(--fs-18);
+    letter-spacing: 0;
+    line-height: 1.25;
+  }
+
+  .mg-header__subtitle {
+    font-size: var(--fs-10);
+    letter-spacing: 0;
+  }
+
+  .mg-header__slogan {
+    display: none;
+  }
+
+  /* ---------- 单列 ---------- */
+
+  .mg-layout-3col,
+  .mg-layout-2col,
+  .mg-home__body,
+  .mg-home__bottom,
+  .mg-cols,
+  .mg-grid--2,
+  .mg-grid--3,
+  .mg-grid--4,
+  .mg-grid--5,
+  .mg-grid--6 {
+    flex-direction: column;
+    display: flex;
+  }
+
+  /* 用 flex 覆盖 grid 后，让子项等宽自适应 */
+  .mg-grid--2 > *,
+  .mg-grid--3 > *,
+  .mg-grid--4 > *,
+  .mg-grid--5 > *,
+  .mg-grid--6 > * {
+    width: 100%;
+  }
+
+  .mg-layout-3col > .mg-layout__left,
+  .mg-layout-3col > .mg-layout__main,
+  .mg-layout-3col > .mg-layout__right,
+  .mg-layout-2col > .mg-layout__side,
+  .mg-layout-2col > .mg-layout__main,
+  .mg-home__left,
+  .mg-home__center,
+  .mg-home__right,
+  .mg-home__bottom-left,
+  .mg-home__bottom-center,
+  .mg-home__bottom-right {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+
+  /* 首页底部中栏在小屏也要单列 */
+  .mg-home__bottom-center {
+    flex-direction: column;
+  }
+
+  /* 侧栏导航在手机上折成横向标签条，避免占满首屏 */
+  .mg-sidenav {
+    margin-bottom: 6px;
+  }
+
+  .mg-sidenav__head {
+    height: 28px;
+    font-size: var(--fs-13);
+  }
+
+  .mg-sidenav__item {
+    display: inline-block;
+    width: 50%;
+    padding: 6px 8px;
+    border-right: 1px solid var(--c-divider);
+    font-size: var(--fs-12);
+    vertical-align: top;
+  }
+
+  .mg-sidenav__item.is-active {
+    padding-left: 8px;
+    border-left: 0;
+    border-bottom: 2px solid var(--c-red);
+  }
+
+  /* ---------- 组件 ---------- */
+
+  .mg-panel__head {
+    height: auto;
+    min-height: 28px;
+    padding: 4px 8px;
+    font-size: var(--fs-12);
+    line-height: 1.4;
+  }
+
+  .mg-list__item {
+    font-size: var(--fs-12);
+  }
+
+  /* 列表标题在窄屏允许折行：省略号会让标题彻底读不出 */
+  .mg-list__text {
+    white-space: normal;
+    overflow: visible;
+  }
+
+  .mg-iconbox {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .mg-iconbox__cell {
+    padding: 6px 2px 4px;
+  }
+
+  .mg-iconbox__icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .mg-iconbox__label {
+    font-size: var(--fs-11);
+  }
+
+  .mg-modal__mask {
+    align-items: flex-start;
+    padding: 12px 0;
+    overflow-y: auto;
+  }
+
+  /*
+   * 表单行改为纵向
+   *
+   * I. 必须显式 align-items: stretch
+   *
+   * 1. 基类的 `.mg-form__row { align-items: flex-start }` 横向时是对的，
+   *    但 `flex-direction` 一变成 column，cross axis 就成了水平方向，
+   *    flex-start 会让子项退化成「内容宽度」—— 实测输入框只剩 140px。
+   * 2. 因此这里必须显式改回 stretch，并给控件补 width:100%，
+   *    否则任何模块的窄屏表单都会塌成一条窄条。
+   */
+  .mg-form__row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 3px;
+  }
+
+  .mg-form__label {
+    flex: 1 1 auto;
+    width: 100%;
+    text-align: left;
+  }
+
+  .mg-form__control {
+    width: 100%;
+  }
+
+  /* 触控目标不低于 34px，避免手机上点不中 */
+  .mg-input,
+  .mg-select {
+    width: 100%;
+    min-height: 34px;
+  }
+
+  .mg-textarea {
+    width: 100%;
+    min-height: 96px;
+  }
+
+  .mg-btn {
+    min-height: 30px;
+  }
+
+  .mg-pager {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .mg-pager__info {
+    flex: 1 1 100%;
+    text-align: center;
+    margin: 4px 0 0;
+  }
+
+  .mg-crumbs {
+    font-size: var(--fs-11);
+    flex-wrap: wrap;
+  }
+
+  .mg-steps__item {
+    flex: 1 1 50%;
+  }
+
+  .mg-article__meta {
+    flex-wrap: wrap;
+    gap: 4px 10px;
+  }
+
+  .mg-article__meta-right {
+    margin-left: 0;
+    flex: 1 1 100%;
+  }
+
+  .mg-article__body {
+    font-size: var(--fs-14);
+    text-indent: 2em;
+  }
+
+  /* 走马灯在窄屏滚动过快，减速 */
+  .mg-marquee__track {
+    animation-duration: 70s;
+  }
+
+  /* 页脚徽章换行 */
+  .mg-footer__badges {
+    flex-wrap: wrap;
+  }
+
+  .mg-footer__follow {
+    flex: 1 1 100%;
+  }
+
+  .mg-easter-toast {
+    left: 8px;
+    right: 8px;
+    max-width: none;
+  }
+}
+
+/* ============================================================
+   VI. ≤420px 小屏手机
+   ============================================================ */
+
+@media (max-width: 420px) {
+  .mg-header {
+    height: 66px;
+  }
+
+  .mg-header__center {
+    padding: 0 44px;
+  }
+
+  .mg-header__title {
+    font-size: var(--fs-16);
+  }
+
+  .mg-iconbox {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .mg-nav__item {
+    height: 38px;
+    font-size: var(--fs-14);
+  }
+
+  /*
+   * 极窄屏（≤420px）工具条
+   *
+   * 320px 宽实测工具条会被撑出 7px 横向滚动。这里把日期与热线的
+   * 字号各收一档，并隐藏热线的「服务热线：」文字标签 —— ☎ 图标 + 号码
+   * 已足够表意，号码本身仍然完整保留（不隐藏任何信息性内容）。
+   */
+  .mg-topbar__left {
+    font-size: var(--fs-11);
+    min-width: 0;
+  }
+
+  .mg-topbar__hotline {
+    font-size: var(--fs-12);
+    gap: 3px;
+  }
+
+  .mg-topbar__hotline-icon {
+    font-size: 12px;
+  }
+
+  .mg-topbar__hotline-label {
+    display: none;
+  }
+}
+
+/* ============================================================
+   VII. 打印：把外壳去掉，只留正文（详情页的「打印本页」按钮用）
+   ============================================================ */
+
+@media print {
+  .mg-topbar,
+  .mg-nav,
+  .mg-footer,
+  .mg-header__side,
+  .mg-easter-toast {
+    display: none !important;
+  }
+
+  .mg-header {
+    height: auto;
+    background: none;
+  }
+
+  .mg-header__title {
+    color: #000;
+    text-shadow: none;
+    font-size: 22px;
+  }
+
+  .mg-container {
+    max-width: none;
+  }
+}

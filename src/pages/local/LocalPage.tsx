@@ -99,7 +99,8 @@ export default function LocalPage(props: LocalPageProps) {
         ]}
       />
 
-      <div className="mg-layout-2col">
+      {/* mg-local-layout：仅用于窄屏重排（主内容在前，热度榜与说明在后） */}
+      <div className="mg-layout-2col mg-local-layout">
         {/* ---------------- 左栏 ---------------- */}
         <div className="mg-layout__side">
           <Panel
@@ -287,7 +288,9 @@ export default function LocalPage(props: LocalPageProps) {
                     </div>
                   </div>
                 ) : (
-                  <table className="mg-table mg-table--compact">
+                  /* 7 列州列表：窄屏靠 .mg-table-scroll 横向滚动，不压缩列宽 */
+                  <div className="mg-table-scroll mg-local-table-scroll">
+                    <table className="mg-table mg-table--compact">
                     <thead>
                       <tr>
                         <th>州名</th>
@@ -314,7 +317,8 @@ export default function LocalPage(props: LocalPageProps) {
                         </tr>
                       ))}
                     </tbody>
-                  </table>
+                    </table>
+                  </div>
                 )}
 
                 <Pager

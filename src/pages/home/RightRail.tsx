@@ -22,7 +22,7 @@ import { ServiceIcon } from '@/components/art';
 import { MoreLink, Panel, StatRow } from '@/components/ui';
 import { useApp } from '@/app-context';
 import { ASSETS } from '@/data/assets';
-import { formatTodayCount, NOTICE_ROWS, STAT_NOTE } from '@/data/home';
+import { formatTodayCount, NOTICE_ROWS, STAT_NOTE, VISITOR_COUNTER } from '@/data/home';
 import { formatNumber, HOME_STATS } from '@/data/stats';
 import { Link } from '@/router';
 import { HomeList } from './HomeList';
@@ -98,6 +98,22 @@ export function RightRail() {
         />
         <div className="mg-home__stat-note">{STAT_NOTE}</div>
       </Panel>
+
+      {/* ⑤ 访问量计数器：把右栏补齐到与左栏齐平，顺便留一个上世纪的笑点 */}
+      <div className="mg-home__counter">
+        <div className="mg-home__counter-row">
+          <span className="mg-home__counter-label">{VISITOR_COUNTER.label}</span>
+          <span className="mg-home__counter-digits">
+            {VISITOR_COUNTER.digits.split('').map((d, i) => (
+              <span key={`${d}-${i}`} className="mg-home__counter-digit">
+                {d}
+              </span>
+            ))}
+          </span>
+          <span className="mg-home__counter-label">{VISITOR_COUNTER.unit}</span>
+        </div>
+        <div className="mg-home__counter-note">{VISITOR_COUNTER.note}</div>
+      </div>
     </aside>
   );
 }

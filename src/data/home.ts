@@ -17,7 +17,7 @@
  *
  * II. 黑色幽默的埋点位置
  *
- * 1. 页面上一共埋了 10 处，落点分别是：
+ * 1. 页面上一共埋了 12 处，落点分别是：
  *    (1) `TOP_STORY.footnote` —— 重磅新闻的版面说明
  *    (2) `LATEST_DOCS` 第 1、2、8 条 —— 文号链式转发
  *    (3) `NEWS_DYNAMICS` 的 `remark` —— 视察当天的系统表现
@@ -28,6 +28,8 @@
  *    (8) `LOCAL_STATIONS.note` —— 分站建设进度
  *    (9) `HOT_SERVICES_NOTE` —— 未上榜服务的入口说明
  *    (10) `STAT_NOTE` —— 只增不减的统计口径
+ *    (11) `SURVEY` —— 四个选项全是正面表述，且都是 100%
+ *    (12) `VISITOR_COUNTER` —— 计数器早已不再接线，数字却依然精确
  * 2. 写法要求：公文语气、具体数字、不带感叹号、不带网络用语。
  *
  * @module data/home
@@ -479,3 +481,49 @@ export const VETERAN_BANNER = {
 
 /** 热门服务面板底部说明（黑色幽默 9） */
 export const HOT_SERVICES_NOTE = '以上 8 项为热门服务。其余 1,139 项服务因不够热门，暂不提供入口。';
+
+/* ================= IX. 中栏补充模块 ================= */
+
+/**
+ * 「网上调查」
+ *
+ * 黑色幽默 11：四个选项全是正面表述，且每一项都是 100%。
+ * 老政务网站的调查问卷从来不会出现负面选项，这是本项目最想留存的一个细节。
+ */
+export const SURVEY = {
+  question: '您对本站网上办事服务的总体评价是（单选）：',
+  options: [
+    { label: '非常满意', percent: 100 },
+    { label: '满意', percent: 100 },
+    { label: '基本满意', percent: 100 },
+    { label: '极其满意', percent: 100 },
+  ],
+  note: '本次调查已收到 128,406 份问卷，满意度 100%。问卷共 1 题，为单选题。',
+};
+
+/** 「便民服务直通车」10 个快捷入口，两行排布 */
+export const DIRECT_LINKS: { label: string; to: string }[] = [
+  { label: '社保卡挂失', to: '/service' },
+  { label: '电子证照', to: '/query' },
+  { label: '跨州通办', to: '/service' },
+  { label: '无障碍服务', to: '/accessibility' },
+  { label: '长者助手', to: '/elder' },
+  { label: '企业开办', to: '/service/business' },
+  { label: '住房公积金', to: '/service' },
+  { label: '出入境预约', to: '/service' },
+  { label: '办件进度查询', to: '/service/track' },
+  { label: '表格下载中心', to: '/download' },
+];
+
+/**
+ * 右栏「访问量计数器」
+ *
+ * 黑色幽默 12：计数器早就不再接线，但数字依然精确。
+ */
+export const VISITOR_COUNTER = {
+  label: '您是第',
+  unit: '位访问者',
+  /** 逐位渲染成老式里程表数字格 */
+  digits: '177600000',
+  note: '计数器自 2019 年起未再接线，当前数值为估计值。',
+};

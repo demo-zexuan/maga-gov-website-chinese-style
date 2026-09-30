@@ -339,7 +339,7 @@ export default function SearchPage({ q }: SearchPageProps) {
   const elapsed = elapsedOf(keyword || 'x');
 
   return (
-    <div className="mg-page">
+    <div className="mg-page mg-srch-page">
       <Crumbs items={[{ label: '全站检索' }]} />
 
       <div className="mg-layout-3col">

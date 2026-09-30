@@ -1,0 +1,424 @@
+/**
+ * news 模块响应式适配
+ *
+ * I. 归属
+ *
+ * 本文件由 news 模块负责人维护，只允许写该模块自己的选择器。
+ * 加载顺序在 styles/responsive.css（Lead 的地基）之后，因此可以覆盖地基。
+ *
+ * II. 断点约定（与地基一致，不要新增断点）
+ *
+ * 1. `max-width: 1399px` 紧凑桌面
+ * 2. `max-width: 1023px` 平板
+ * 3. `max-width: 767px`  手机
+ * 4. `max-width: 420px`  小屏手机
+ *
+ * III. 硬约束
+ *
+ * 1. 不得影响 ≥1400px 的桌面版式（参考图还原区）。
+ * 2. 不得出现横向滚动：手机端任何元素都不应超出 100vw。
+ * 3. 表格类内容必须可横向滚动查看，不允许被裁切。
+ * 4. 出现内容截断时优先"换行/堆叠"，不要用 `display:none` 藏掉信息，
+ *    除非该信息确实是纯装饰。
+ *
+ * IV. 作用域
+ *
+ * 全部选择器都挂在页面级类名之下，避免影响其它模块：
+ *
+ * 1. `.mg-news-page`   —— 要闻列表页（/news、/news/president、/news/dept、/news/local）
+ * 2. `.mg-news-detail` —— 稿件详情页（/news/:id，含 404 区块）
+ * 3. `.mg-srch-page`   —— 全站检索页（/search）
+ *
+ * V. 本模块在四个断点下的处理要点
+ *
+ * 1. 平板：列表条目的「角标 + 标题 + 文号」由挤在一行改为分行排列，
+ *    标题整行显示，文号不再被压成两行。
+ * 2. 手机：三栏改为「主内容 → 侧栏」顺序，详情页的右栏（相关阅读 / 热点排行）
+ *    紧跟正文之后，左栏（栏目树 / 近期稿件）最后，正文不再被导航挤到首屏之外。
+ * 3. 手机：A- / A / A+ 字号按钮抬到 32px 触控高度，按钮与标签可换行。
+ * 4. 全断点：检索页 13 个筛选选项卡自动换行；输入框占满剩余宽度。
+ *
+ * @module styles/responsive/news
+ * @author zexuan.peng <pengzexuan2001@gmail.com>
+ * @created 2026-09-30
+ */
+
+/* ============================================================
+   I. ≤1399px 紧凑桌面：中栏变窄，提前允许折行与断词
+   ============================================================ */
+
+@media (max-width: 1399px) {
+  .mg-news-page .mg-news-list__meta,
+  .mg-srch-page .mg-srch__meta {
+    gap: 6px 10px;
+  }
+
+  /* 长文号、长数字、长英文串不撑破中栏 */
+  .mg-news-page .mg-news-list__title,
+  .mg-news-page .mg-news-list__summary,
+  .mg-news-page .mg-news-list__meta,
+  .mg-srch-page .mg-srch__title,
+  .mg-srch-page .mg-srch__snippet,
+  .mg-news-detail .mg-article__body p,
+  .mg-news-detail .mg-article__foot {
+    overflow-wrap: break-word;
+  }
+}
+
+/* ============================================================
+   II. ≤1023px 平板：列表条目分行，触控目标放大
+   ============================================================ */
+
+@media (max-width: 1023px) {
+  /* ---------- 要闻列表：角标 / 标题 / 文号分行 ---------- */
+
+  .mg-news-page .mg-news-list__row {
+    flex-wrap: wrap;
+  }
+
+  /* 角标保持在小屏的第一行，标题整行独占 */
+  .mg-news-page .mg-news-list__row .mg-badge,
+  .mg-news-page .mg-news-list__row .mg-chip {
+    order: -1;
+  }
+
+  .mg-news-page .mg-news-list__title {
+    flex: 1 1 100%;
+  }
+
+  .mg-news-page .mg-news-list__summary {
+    font-size: var(--fs-13);
+  }
+
+  .mg-news-page .mg-news-list__meta {
+    flex-wrap: wrap;
+  }
+
+  /* 列表页检索条：输入框吃掉剩余宽度，不再固定 320px */
+  .mg-news-page .mg-news-search__input {
+    flex: 1 1 200px;
+  }
+
+  /* ---------- 检索页：类型标签与标题分行 ---------- */
+
+  .mg-srch-page .mg-srch__head {
+    flex-wrap: wrap;
+  }
+
+  .mg-srch-page .mg-srch__title {
+    flex: 1 1 100%;
+  }
+
+  .mg-srch-page .mg-srch__form .mg-news-search__input {
+    flex: 1 1 220px;
+  }
+
+  /* ---------- 详情页：字号调节按钮抬到 32px 触控高度 ---------- */
+
+  .mg-news-detail .mg-article__meta-right {
+    flex-wrap: wrap;
+    gap: 6px 8px;
+  }
+
+  .mg-news-detail .mg-article__meta-right .mg-btn {
+    height: 32px;
+    min-width: 44px;
+    padding: 0 10px;
+    font-size: var(--fs-13);
+  }
+
+  .mg-news-detail .mg-news-fontnow {
+    font-size: var(--fs-12);
+  }
+
+  /* 文末工具条：打印 / 关闭 / 评价三个按钮同样放大 */
+  .mg-news-detail .mg-news-article__tools {
+    gap: 6px;
+  }
+
+  .mg-news-detail .mg-news-article__tools .mg-btn {
+    height: 32px;
+    padding: 0 12px;
+    font-size: var(--fs-12);
+  }
+
+  /* 上一篇 / 下一篇：标题不再被省略号吞掉，改为整行折行 */
+  .mg-news-detail .mg-article__nav a {
+    flex: 1 1 100%;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    line-height: 1.7;
+  }
+
+  /* 404 区块按钮可点 */
+  .mg-news-detail .mg-news-404__actions {
+    flex-wrap: wrap;
+  }
+
+  .mg-news-detail .mg-news-404__actions .mg-btn {
+    height: 32px;
+    padding: 0 12px;
+  }
+
+  /*
+   * meta 行整体换行即可，单个信息项内部不再折行：
+   * 否则「来源：联邦数字政府建设办公室」会被拆成两行，读起来像缺字。
+   * 各项最长约 170px，390px 视口内仍可容纳，不会造成横向滚动。
+   */
+  .mg-news-detail .mg-article__meta > span {
+    white-space: nowrap;
+  }
+}
+
+/* ============================================================
+   III. ≤767px 手机：单列 + 内容优先顺序
+   ============================================================ */
+
+@media (max-width: 767px) {
+  /* ---------- I. 栏序：正文/列表在前，侧栏在后 ---------- */
+
+  /* 列表页与检索页：列表 → 左栏说明 → 右栏热点 */
+  .mg-news-page .mg-layout-3col > .mg-layout__main,
+  .mg-srch-page .mg-layout-3col > .mg-layout__main {
+    order: 1;
+  }
+
+  .mg-news-page .mg-layout-3col > .mg-layout__left,
+  .mg-srch-page .mg-layout-3col > .mg-layout__left {
+    order: 2;
+  }
+
+  .mg-news-page .mg-layout-3col > .mg-layout__right,
+  .mg-srch-page .mg-layout-3col > .mg-layout__right {
+    order: 3;
+  }
+
+  /* 详情页：正文 → 相关阅读/热点排行 → 栏目树与近期稿件 */
+  .mg-news-detail .mg-layout-3col > .mg-layout__main,
+  .mg-news-detail .mg-layout-2col > .mg-layout__main {
+    order: 1;
+  }
+
+  .mg-news-detail .mg-layout-3col > .mg-layout__right {
+    order: 2;
+  }
+
+  .mg-news-detail .mg-layout-3col > .mg-layout__left,
+  .mg-news-detail .mg-layout-2col > .mg-layout__side {
+    order: 3;
+  }
+
+  /* ---------- II. 要闻列表页 ---------- */
+
+  .mg-news-page .mg-news-search {
+    gap: 4px 6px;
+    padding: 6px;
+  }
+
+  .mg-news-page .mg-news-search__label,
+  .mg-news-page .mg-news-search__hint {
+    flex: 1 1 100%;
+  }
+
+  .mg-news-page .mg-news-search__input {
+    flex: 1 1 140px;
+    height: 30px;
+    font-size: var(--fs-13);
+  }
+
+  .mg-news-page .mg-news-search .mg-btn {
+    height: 30px;
+  }
+
+  .mg-news-page .mg-news-search__sum {
+    font-size: var(--fs-11);
+    line-height: 1.7;
+  }
+
+  .mg-news-page .mg-news-list {
+    padding: 4px 6px 8px;
+  }
+
+  .mg-news-page .mg-news-list__summary {
+    font-size: var(--fs-12);
+    line-height: 1.75;
+  }
+
+  .mg-news-page .mg-news-list__meta {
+    gap: 3px 10px;
+    font-size: var(--fs-11);
+    line-height: 1.6;
+  }
+
+  /* 日期不再右浮动，避免窄屏被挤到单独一行后左右飘 */
+  .mg-news-page .mg-news-list__date {
+    margin-left: 0;
+  }
+
+  .mg-news-page .mg-news-tip,
+  .mg-srch-page .mg-news-tip {
+    padding: 6px 8px;
+    line-height: 1.75;
+  }
+
+  .mg-news-page .mg-news-note,
+  .mg-srch-page .mg-news-note {
+    line-height: 1.75;
+  }
+
+  /* ---------- III. 详情页 ---------- */
+
+  .mg-news-detail .mg-article {
+    padding: 12px 10px 18px;
+  }
+
+  /* meta 行 4 项窄屏左对齐换行，居中会让断行看起来像错位 */
+  .mg-news-detail .mg-article__meta {
+    justify-content: flex-start;
+    text-align: left;
+    gap: 4px 10px;
+    font-size: var(--fs-11);
+  }
+
+  .mg-news-detail .mg-article__meta-right {
+    justify-content: flex-start;
+    flex: 1 1 100%;
+  }
+
+  .mg-news-detail .mg-article__subtitle {
+    font-size: var(--fs-13);
+    text-align: left;
+  }
+
+  .mg-news-detail .mg-article__foot {
+    font-size: var(--fs-11);
+    line-height: 1.9;
+  }
+
+  /* 404 区块 */
+  .mg-news-detail .mg-news-404 {
+    padding: 18px 10px 22px;
+  }
+
+  .mg-news-detail .mg-news-404__code {
+    font-size: 44px;
+  }
+
+  .mg-news-detail .mg-news-404__title {
+    font-size: var(--fs-16);
+    line-height: 1.5;
+  }
+
+  .mg-news-detail .mg-news-404__line {
+    font-size: var(--fs-12);
+    line-height: 1.85;
+  }
+
+  .mg-news-detail .mg-news-404__actions {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .mg-news-detail .mg-news-404__actions .mg-btn {
+    width: 100%;
+  }
+
+  /* ---------- IV. 全站检索页 ---------- */
+
+  .mg-srch-page .mg-srch__form {
+    gap: 4px 6px;
+    padding: 6px;
+  }
+
+  .mg-srch-page .mg-srch__form .mg-news-search__label {
+    flex: 1 1 100%;
+  }
+
+  .mg-srch-page .mg-srch__form .mg-news-search__input {
+    flex: 1 1 140px;
+    height: 30px;
+    font-size: var(--fs-13);
+  }
+
+  .mg-srch-page .mg-srch__form .mg-btn {
+    height: 30px;
+  }
+
+  .mg-srch-page .mg-srch__stat {
+    padding: 6px 8px;
+    font-size: var(--fs-11);
+    line-height: 1.85;
+  }
+
+  /* 13 个筛选选项卡：允许换行、解除 .mg-tabbar 固定高度（地基已处理，这里再兜一层） */
+  .mg-srch-page .mg-srch__tabs {
+    flex-wrap: wrap;
+    height: auto;
+    row-gap: 2px;
+    padding: 4px 4px 2px;
+  }
+
+  .mg-srch-page .mg-srch__list {
+    padding: 4px 6px 8px;
+  }
+
+  .mg-srch-page .mg-srch__item {
+    padding: 8px 0;
+  }
+
+  .mg-srch-page .mg-srch__snippet {
+    font-size: var(--fs-12);
+    line-height: 1.75;
+  }
+
+  .mg-srch-page .mg-srch__meta {
+    gap: 3px 10px;
+    font-size: var(--fs-11);
+    line-height: 1.6;
+  }
+
+  .mg-srch-page .mg-srch__keys {
+    gap: 4px;
+  }
+}
+
+/* ============================================================
+   IV. ≤420px 小屏手机：进一步压缩字号与间距
+   ============================================================ */
+
+@media (max-width: 420px) {
+  .mg-news-page .mg-news-list__title,
+  .mg-srch-page .mg-srch__title {
+    font-size: var(--fs-13);
+  }
+
+  .mg-news-page .mg-news-list__meta,
+  .mg-srch-page .mg-srch__meta {
+    gap: 3px 8px;
+    font-size: var(--fs-10);
+  }
+
+  .mg-news-page .mg-news-search__input,
+  .mg-srch-page .mg-srch__form .mg-news-search__input {
+    flex: 1 1 100%;
+  }
+
+  .mg-news-page .mg-tabbar__tab,
+  .mg-srch-page .mg-tabbar__tab {
+    padding: 5px 8px;
+  }
+
+  .mg-news-detail .mg-article__title {
+    font-size: var(--fs-18);
+  }
+
+  .mg-news-detail .mg-article__meta-right .mg-btn {
+    min-width: 40px;
+    padding: 0 8px;
+  }
+
+  .mg-news-detail .mg-news-404__code {
+    font-size: 38px;
+  }
+}

@@ -32,7 +32,7 @@
 }
 
 .mg-topbar__inner {
-  width: var(--layout-width);
+  width: 100%;  max-width: var(--layout-width);
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -117,6 +117,20 @@
   color: var(--c-red);
   font-weight: bold;
   font-family: var(--font-hei);
+  /* 允许在极窄屏收缩，避免把工具条撑出横向滚动 */
+  min-width: 0;
+  flex-shrink: 1;
+}
+
+.mg-topbar__hotline-icon {
+  font-size: 16px;
+  line-height: 1;
+  flex: 0 0 auto;
+}
+
+.mg-topbar__hotline-body {
+  min-width: 0;
+  white-space: nowrap;
 }
 
 .mg-topbar__hotline small {
@@ -138,7 +152,7 @@
 
 .mg-header__inner {
   position: relative;
-  width: var(--layout-width);
+  width: 100%;  max-width: var(--layout-width);
   height: 100%;
   margin: 0 auto;
   display: flex;
@@ -146,13 +160,80 @@
   justify-content: center;
 }
 
-/* 左侧国旗 + 国会山；右侧自由女神。用绝对定位贴边，中间留给标题。 */
+/*
+ * 顶栏两侧：实拍照片层
+ *
+ * 参考图的顶栏左右两侧是真实照片（国会山 + 星条旗 / 自由女神），
+ * 照片向中间渐隐融入红色底，形成"照片 → 红底 → 照片"的三段构图，
+ * 这是该版式最重要的视觉特征之一。
+ *
+ * 降级：照片加载失败时 HeaderPhoto 会退回手绘矢量场景
+ * （.mg-header__flag / .mg-header__liberty），故两套样式都保留。
+ */
+.mg-header__side {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.mg-header__side--left {
+  left: 0;
+  width: 26%;
+  min-width: 240px;
+  max-width: 380px;
+}
+
+.mg-header__side--right {
+  right: 0;
+  width: 22%;
+  min-width: 200px;
+  max-width: 320px;
+}
+
+.mg-header__side img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 向中间渐隐：让照片边缘无缝融进红色底 */
+.mg-header__side::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.mg-header__side--left::after {
+  background: linear-gradient(
+    90deg,
+    rgba(140, 0, 0, 0) 0%,
+    rgba(150, 0, 0, 0.18) 55%,
+    rgba(160, 0, 0, 0.72) 84%,
+    rgba(189, 0, 0, 0.96) 100%
+  );
+}
+
+.mg-header__side--right::after {
+  background: linear-gradient(
+    270deg,
+    rgba(140, 0, 0, 0) 0%,
+    rgba(150, 0, 0, 0.18) 55%,
+    rgba(160, 0, 0, 0.72) 84%,
+    rgba(189, 0, 0, 0.96) 100%
+  );
+}
+
+/* --- 矢量降级场景（照片加载失败时使用） --- */
+
 .mg-header__flag {
   position: absolute;
   left: 0;
   top: 0;
-  bottom: 0;
   width: 300px;
+  height: 100%;
   opacity: 0.95;
 }
 
@@ -160,8 +241,8 @@
   position: absolute;
   right: 0;
   top: 0;
-  bottom: 0;
   width: 260px;
+  height: 100%;
   opacity: 0.95;
 }
 
@@ -179,6 +260,13 @@
   width: 108px;
   height: 108px;
   z-index: 1;
+}
+
+/* 位图版国徽：官方徽记自带圆形边缘与外描边，圆角与投影让它在红底上更"立体" */
+.mg-header__seal--photo {
+  object-fit: contain;
+  border-radius: 50%;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.45));
 }
 
 .mg-header__title {
@@ -247,7 +335,7 @@
 }
 
 .mg-nav__inner {
-  width: var(--layout-width);
+  width: 100%;  max-width: var(--layout-width);
   height: 100%;
   margin: 0 auto;
   display: flex;
@@ -358,7 +446,7 @@
 }
 
 .mg-footer__links-inner {
-  width: var(--layout-width);
+  width: 100%;  max-width: var(--layout-width);
   margin: 0 auto;
   padding: 7px 8px;
   display: flex;
@@ -384,7 +472,7 @@
 }
 
 .mg-footer__main {
-  width: var(--layout-width);
+  width: 100%;  max-width: var(--layout-width);
   margin: 0 auto;
   padding: 12px 8px 14px;
   display: flex;
@@ -486,4 +574,14 @@
   text-align: center;
   border-left: 1px solid rgba(255, 255, 255, 0.15);
   padding-left: 10px;
+}
+
+/* ================= V. 移动端汉堡按钮（桌面隐藏） ================= */
+
+/*
+ * 桌面端永远不显示；≤1023px 时由 responsive.css 打开。
+ * 放在这里是为了让"导航"相关样式集中在一个文件里，便于对照维护。
+ */
+.mg-nav__toggle {
+  display: none;
 }

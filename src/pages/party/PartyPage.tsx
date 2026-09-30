@@ -156,7 +156,8 @@ export default function PartyPage(props: PartyPageProps) {
         </Alert>
       )}
 
-      <div className="mg-layout-3col">
+      {/* mg-party-layout 仅供窄屏重排使用（主内容 → 学习园地 → 栏目标签） */}
+      <div className="mg-layout-3col mg-party-layout">
         {/* 左栏：栏目树 + 考核指标 */}
         <div className="mg-layout__left">
           <PartySideNav active={activeKey} />

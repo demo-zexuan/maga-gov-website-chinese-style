@@ -1,0 +1,348 @@
+/**
+ * download 模块响应式适配
+ *
+ * I. 归属
+ *
+ * 本文件由 download 模块负责人维护，只允许写该模块自己的选择器。
+ * 加载顺序在 styles/responsive.css（Lead 的地基）之后，因此可以覆盖地基。
+ *
+ * II. 断点约定（与地基一致，不要新增断点）
+ *
+ * 1. `max-width: 1399px` 紧凑桌面
+ * 2. `max-width: 1023px` 平板
+ * 3. `max-width: 767px`  手机
+ * 4. `max-width: 420px`  小屏手机
+ *
+ * III. 硬约束
+ *
+ * 1. 不得影响 ≥1400px 的桌面版式（参考图还原区）。
+ * 2. 不得出现横向滚动：手机端任何元素都不应超出 100vw。
+ * 3. 表格类内容必须可横向滚动查看，不允许被裁切。
+ * 4. 出现内容截断时优先"换行/堆叠"，不要用 `display:none` 藏掉信息，
+ *    除非该信息确实是纯装饰。
+ *
+ * IV. 本模块的适配重点
+ *
+ * 1. .mg-dl-row：窄屏折行成「徽标 + 文件名」在上、「元信息 + 下载按钮」在下，
+ *    文件名改为折行显示，不允许被省略号吃掉
+ * 2. 99% 卡死弹窗：地基已把弹窗宽度收到视口内，这里负责让进度条、百分比、
+ *    取消按钮在手机上完整可见且可点
+ * 3. 客户端卡片：小屏单列，二维码与信息上下堆叠
+ *
+ * @module styles/responsive/download
+ * @author zexuan.peng <pengzexuan2001@gmail.com>
+ * @created 2026-09-30
+ */
+
+/* ============================================================
+   I. ≤1023px 平板
+   ============================================================ */
+
+@media (max-width: 1023px) {
+  /* 工具条在平板下允许换行，避免三个控件互相挤压 */
+  .mg-dl-toolbar {
+    flex-wrap: wrap;
+  }
+
+  .mg-dl-toolbar .mg-input {
+    flex: 1 1 100%;
+    max-width: none;
+  }
+
+  .mg-dl-toolbar .mg-select {
+    flex: 1 1 200px;
+  }
+
+  /* 下载列表行的备注在平板下允许折行 */
+  .mg-dl-row__remark {
+    line-height: 1.7;
+  }
+
+  /* 客户端卡片在平板下仍是两列，二维码适当缩小給文字留位置 */
+  .mg-app-card__qr svg {
+    width: 72px;
+    height: 72px;
+  }
+
+  .mg-app-card__qr-note {
+    width: 84px;
+  }
+}
+
+/* ============================================================
+   II. ≤767px 手机（本模块的主要适配区间）
+   ============================================================ */
+
+@media (max-width: 767px) {
+  /* ---------- 1. 下载列表行：折行，文件名不被挤没 ---------- */
+
+  .mg-dl-list {
+    border-top: 0;
+  }
+
+  .mg-dl-row {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    row-gap: 5px;
+    padding: 8px;
+  }
+
+  /* 第一行：格式徽标 + 文件名区（占满徽标之外的全部宽度） */
+  .mg-dl-row__main {
+    flex: 1 1 calc(100% - 42px);
+  }
+
+  /* 关键：窄屏下文件名折行显示，不用省略号截断 */
+  .mg-dl-row__main .mg-dl-row__name {
+    flex: 0 0 auto;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  .mg-dl-row__sub,
+  .mg-dl-row__remark {
+    overflow-wrap: anywhere;
+  }
+
+  /* 第二行：元信息在左，下载按钮在右，按钮保持可点尺寸 */
+  .mg-dl-row__meta {
+    flex: 1 1 auto;
+    line-height: 1.6;
+  }
+
+  .mg-dl-row .mg-btn {
+    flex: 0 0 auto;
+    min-height: 34px;
+    margin-left: auto;
+  }
+
+  /* ---------- 2. 工具条 / 须知 / 回执 ---------- */
+
+  .mg-dl-toolbar {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .mg-dl-toolbar .mg-input,
+  .mg-dl-toolbar .mg-select {
+    flex: 1 1 100%;
+    max-width: none;
+  }
+
+  .mg-dl-toolbar .mg-btn {
+    min-height: 32px;
+  }
+
+  .mg-dl-toolbar__note {
+    flex: 1 1 100%;
+  }
+
+  .mg-dl-notice {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .mg-dl-notice .mg-alert {
+    flex: 1 1 100%;
+  }
+
+  .mg-dl-notice .mg-btn {
+    flex: 1 1 auto;
+    min-height: 34px;
+  }
+
+  /* 回执：徽标与关闭按钮一行，回执正文另起一行 */
+  .mg-dl-receipt {
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+
+  .mg-dl-receipt__mark {
+    order: 1;
+  }
+
+  .mg-dl-receipt .mg-btn {
+    order: 2;
+    margin-left: auto;
+    min-height: 32px;
+  }
+
+  .mg-dl-receipt__text {
+    order: 3;
+    flex: 1 1 100%;
+  }
+
+  /* ---------- 3. 99% 卡死弹窗 ---------- */
+
+  /* 文件名与百分比不能因为折行把进度条挤出视口 */
+  .mg-dl-modal__file {
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+
+  .mg-dl-modal__file-name {
+    flex: 1 1 100%;
+    font-size: var(--fs-13);
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  /* 弹窗内的信息行改为上下堆叠，长机构名/长文件名可读 */
+  .mg-dl-modal__row {
+    flex-wrap: wrap;
+  }
+
+  .mg-dl-modal__row span {
+    flex: 0 0 76px;
+    text-align: left;
+  }
+
+  .mg-dl-modal__progress {
+    margin: 8px 0 4px;
+  }
+
+  /* 进度条加高，手机上一眼能看出卡在 99% */
+  .mg-dl-modal__progress .mg-progress {
+    height: 20px;
+  }
+
+  .mg-dl-modal__progress-meta {
+    flex-wrap: wrap;
+    gap: 2px;
+  }
+
+  .mg-dl-modal__message {
+    flex: 1 1 auto;
+  }
+
+  .mg-dl-modal__percent {
+    font-size: var(--fs-20);
+    margin-left: auto;
+  }
+
+  /* 弹窗底部按钮加大，取消下载必须一指点得到 */
+  .mg-modal__foot .mg-btn {
+    min-height: 38px;
+  }
+
+  /* ---------- 4. 客户端卡片 ---------- */
+
+  .mg-app-card__name {
+    overflow-wrap: anywhere;
+  }
+
+  .mg-app-card__body {
+    align-items: flex-start;
+  }
+
+  .mg-app-card__meta {
+    line-height: 1.8;
+  }
+
+  .mg-app-card__actions .mg-btn {
+    min-height: 34px;
+  }
+
+  /* ---------- 5. 右栏 ---------- */
+
+  /* 排行标题在窄屏折行，避免只剩省略号 */
+  .mg-dl-rank__title {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  .mg-dl-rank__value {
+    font-size: var(--fs-11);
+  }
+
+  .mg-dl-facts__row {
+    flex-wrap: wrap;
+  }
+
+  .mg-dl-facts__row span {
+    flex: 0 0 76px;
+  }
+
+  .mg-dl-faq__q {
+    padding: 8px;
+    line-height: 1.5;
+  }
+
+  .mg-dl-faq__a {
+    padding: 6px 8px 8px 18px;
+  }
+
+  /* ---------- 6. 栏目卡片（错误态） ---------- */
+
+  .mg-dl-catcard {
+    padding: 12px 10px;
+  }
+}
+
+/* ============================================================
+   III. ≤420px 小屏手机
+   ============================================================ */
+
+@media (max-width: 420px) {
+  /* 极窄屏下元信息独占一行；下载按钮另起一行右对齐，
+     高度保持 38px 便于点按，但不拉通整行（62 行全宽红块会让页面失去层次） */
+  .mg-dl-row__meta {
+    flex: 1 1 100%;
+  }
+
+  .mg-dl-row .mg-btn {
+    flex: 0 0 auto;
+    min-height: 38px;
+    margin-left: auto;
+    padding: 0 20px;
+  }
+
+  /* 客户端卡片：二维码在上、信息在下 */
+  .mg-app-card__body {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .mg-app-card__qr-note {
+    width: auto;
+    max-width: 220px;
+  }
+
+  .mg-app-card__meta {
+    width: 100%;
+    padding-left: 18px;
+    text-align: left;
+  }
+
+  .mg-app-card__actions .mg-btn {
+    flex: 1 1 100%;
+    min-height: 38px;
+  }
+
+  /* 弹窗信息行在 320px 级宽度下改为上下堆叠 */
+  .mg-dl-modal__row {
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .mg-dl-modal__row span {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+
+  .mg-dl-modal__percent {
+    font-size: var(--fs-18);
+  }
+
+  /* 工具条控件立起来 */
+  .mg-dl-toolbar .mg-btn {
+    flex: 1 1 100%;
+    min-height: 34px;
+  }
+}

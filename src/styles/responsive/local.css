@@ -1,0 +1,308 @@
+/**
+ * local 模块响应式适配
+ *
+ * I. 归属
+ *
+ * 本文件由 local 模块负责人维护，只允许写该模块自己的选择器。
+ * 加载顺序在 styles/responsive.css（Lead 的地基）之后，因此可以覆盖地基。
+ *
+ * II. 断点约定（与地基一致，不要新增断点）
+ *
+ * 1. `max-width: 1399px` 紧凑桌面
+ * 2. `max-width: 1023px` 平板
+ * 3. `max-width: 767px`  手机
+ * 4. `max-width: 420px`  小屏手机
+ *
+ * III. 硬约束
+ *
+ * 1. 不得影响 ≥1400px 的桌面版式（参考图还原区）。
+ * 2. 不得出现横向滚动：手机端任何元素都不应超出 100vw。
+ * 3. 表格类内容必须可横向滚动查看，不允许被裁切。
+ * 4. 出现内容截断时优先"换行/堆叠"，不要用 `display:none` 藏掉信息，
+ *    除非该信息确实是纯装饰。
+ *
+ * IV. 本模块在窄屏上的四个关键问题
+ *
+ * 1. 方格地图是 11 列 SVG 等比缩放：390px 下每个方格只剩约 33px，指头点不准。
+ *    处理办法是让地图容器横向滚动，并给 SVG 一个最小宽度，保证每格 ≥40px。
+ *    压扁方格是最差的做法——看得见但点不中，等于没有。
+ * 2. 州列表 7 列，窄屏必须横向滚动（JSX 已包 .mg-table-scroll）。
+ * 3. 6 个热门分站入口在地基里会折成 6 行单列，屏占比过低，改为平板 3 列、
+ *    手机 2 列。
+ * 4. 哈希配色横幅是「缩写徽记 + 州名 + 办件量牌」三件并排，长州名（如
+ *    「华盛顿哥伦比亚特区」）会把办件量挤出屏幕，处理办法同 party 横幅。
+ *
+ * @module styles/responsive/local
+ * @author zexuan.peng <pengzexuan2001@gmail.com>
+ * @created 2026-09-30
+ */
+
+/* ============================================================
+   I. ≤1399px 紧凑桌面
+   ============================================================ */
+
+@media (max-width: 1399px) {
+  .mg-local-banner__name {
+    font-size: var(--fs-20);
+    letter-spacing: 1px;
+  }
+
+  .mg-local-banner__stat {
+    width: 118px;
+  }
+
+  .mg-local-toolbar__select {
+    flex: 0 0 170px;
+  }
+}
+
+/* ============================================================
+   II. ≤1023px 平板
+   ============================================================ */
+
+@media (max-width: 1023px) {
+  /* ---------- 热门分站入口：6 → 3 列 ---------- */
+
+  .mg-local-hot {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  /* ---------- 7 列州列表：进入横向滚动模式 ---------- */
+
+  .mg-local-table-scroll > .mg-table {
+    min-width: 680px;
+  }
+
+  /* ---------- 检索工具条 ---------- */
+
+  .mg-local-toolbar__input {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  .mg-local-toolbar__select {
+    flex: 1 1 100%;
+  }
+
+  .mg-local-toolbar__count {
+    flex: 1 1 100%;
+  }
+
+  /* ---------- 分站横幅 ---------- */
+
+  .mg-local-banner {
+    gap: 10px;
+    padding: 10px 12px;
+  }
+
+  .mg-local-banner__seal {
+    width: 52px;
+    height: 52px;
+    font-size: var(--fs-20);
+  }
+
+  .mg-local-banner__name {
+    font-size: var(--fs-20);
+    letter-spacing: 1px;
+  }
+
+  .mg-local-banner__en,
+  .mg-local-banner__meta {
+    font-size: var(--fs-11);
+  }
+
+  .mg-local-banner__stat {
+    width: 104px;
+  }
+
+  .mg-local-banner__stat-num {
+    font-size: var(--fs-18);
+  }
+
+  /* ---------- 概览指标：长值允许折行 ---------- */
+
+  .mg-local-metrics__value {
+    overflow-wrap: anywhere;
+  }
+}
+
+/* ============================================================
+   III. ≤767px 手机
+   ============================================================ */
+
+@media (max-width: 767px) {
+  /* ---------- 1. 方格地图：横向滚动 + 保证可点面积 ---------- */
+
+  .mg-local-map {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 6px;
+  }
+
+  /*
+   * 480px ÷ 11 列 ≈ 每格 42px（设计值 cell=42），满足触控目标 ≥40px。
+   * min-width 优先于 SVG 上的行内 width:100%，因此小屏不会被压扁。
+   */
+  .mg-local-map > svg {
+    min-width: 480px;
+    max-width: none;
+  }
+
+  /* 可滚动这件事必须写出来，否则用户不会想到去滑 */
+  .mg-local-map__hint::after {
+    content: ' 小屏可横向滑动查看完整地图，方格尺寸不会缩小。';
+  }
+
+  /* ---------- 2. 热门分站入口：3 → 2 列 ---------- */
+
+  .mg-local-hot {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mg-local-card {
+    padding: 5px 4px;
+  }
+
+  .mg-local-card__name {
+    white-space: normal;
+    font-size: var(--fs-11);
+    line-height: 1.35;
+  }
+
+  .mg-local-card__meta {
+    white-space: normal;
+    line-height: 1.35;
+  }
+
+  /* ---------- 3. 州列表：保持横向滚动 ---------- */
+
+  .mg-local-table-scroll > .mg-table {
+    min-width: 680px;
+  }
+
+  /* ---------- 4. 两栏重排：主内容在前，热度榜与说明在后 ---------- */
+
+  .mg-local-layout > .mg-layout__main {
+    order: 1;
+  }
+
+  .mg-local-layout > .mg-layout__side {
+    order: 2;
+  }
+
+  /* ---------- 5. 列表头 ---------- */
+
+  .mg-local-listhead {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .mg-local-listhead__blurb {
+    font-size: var(--fs-10);
+  }
+
+  /* ---------- 6. 分站横幅：徽记 + 州名一行，办件量独占一行 ---------- */
+
+  .mg-local-banner {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .mg-local-banner__seal {
+    width: 44px;
+    height: 44px;
+    font-size: var(--fs-16);
+  }
+
+  .mg-local-banner__text {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .mg-local-banner__name {
+    font-size: var(--fs-18);
+    letter-spacing: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .mg-local-banner__en,
+  .mg-local-banner__meta {
+    font-size: var(--fs-10);
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+  }
+
+  .mg-local-banner__stat {
+    flex: 1 1 100%;
+    width: auto;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 5px 8px;
+    text-align: left;
+  }
+
+  .mg-local-banner__stat-num {
+    font-size: var(--fs-18);
+  }
+
+  /* ---------- 7. 办件统计：两列 → 单列 ---------- */
+
+  .mg-local-stats {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mg-local-actions .mg-btn {
+    flex: 1 1 100%;
+  }
+
+  /* ---------- 8. 州长活动：日期与正文允许换行 ---------- */
+
+  .mg-local-act {
+    flex-wrap: wrap;
+  }
+
+  .mg-local-act__title {
+    font-size: var(--fs-12);
+  }
+
+  /* ---------- 9. 分站未找到页 ---------- */
+
+  .mg-local-404__action .mg-btn {
+    width: 100%;
+  }
+}
+
+/* ============================================================
+   IV. ≤420px 小屏手机
+   ============================================================ */
+
+@media (max-width: 420px) {
+  .mg-local-banner__name {
+    font-size: var(--fs-16);
+  }
+
+  /* 小屏仍然保留 2 列：入口卡只有三行字，单列会让页面长出一屏 */
+  .mg-local-hot {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mg-local-card__code {
+    font-size: var(--fs-16);
+  }
+
+  /* 地图最小宽度保持不变：宁可多滑一点，也不能让方格小于 40px */
+  .mg-local-map > svg {
+    min-width: 470px;
+  }
+
+  .mg-local-map__hint::after {
+    content: ' 地图可左右滑动。';
+  }
+}

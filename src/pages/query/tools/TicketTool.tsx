@@ -269,34 +269,37 @@ export default function TicketTool() {
             />
           </ResultPanel>
 
-          <table className="mg-table mg-q-tickets">
-            <thead>
-              <tr>
-                <th>罚单编号</th>
-                <th>违章日期</th>
-                <th>违章事由</th>
-                <th>地点</th>
-                <th>应缴金额</th>
-                <th>状态</th>
-              </tr>
-            </thead>
-            <tbody>
-              {query.data.records.map((r) => (
-                <tr key={r.id}>
-                  <td className="mg-q-tickets__id">{r.id}</td>
-                  <td className="mg-q-tickets__date">{r.date}</td>
-                  <td>{r.reason}</td>
-                  <td>{r.place}</td>
-                  <td className="mg-q-tickets__amount">{formatMoney(r.amount)}</td>
-                  <td>
-                    <Badge tone={r.status === '未缴纳' || r.status === '已缴纳（系统未记录）' ? 'red' : 'outline'}>
-                      {r.status}
-                    </Badge>
-                  </td>
+          {/* 罚单表格列多，窄屏下由 .mg-table-scroll 提供横向滚动，不压缩列宽 */}
+          <div className="mg-table-scroll">
+            <table className="mg-table mg-q-tickets">
+              <thead>
+                <tr>
+                  <th>罚单编号</th>
+                  <th>违章日期</th>
+                  <th>违章事由</th>
+                  <th>地点</th>
+                  <th>应缴金额</th>
+                  <th>状态</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {query.data.records.map((r) => (
+                  <tr key={r.id}>
+                    <td className="mg-q-tickets__id">{r.id}</td>
+                    <td className="mg-q-tickets__date">{r.date}</td>
+                    <td>{r.reason}</td>
+                    <td>{r.place}</td>
+                    <td className="mg-q-tickets__amount">{formatMoney(r.amount)}</td>
+                    <td>
+                      <Badge tone={r.status === '未缴纳' || r.status === '已缴纳（系统未记录）' ? 'red' : 'outline'}>
+                        {r.status}
+                      </Badge>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
           <div className="mg-q-tickets__remarks">
             {query.data.records.map((r) => (

@@ -42,7 +42,7 @@ import { HomeList } from './HomeList';
 function HotServicesPanel() {
   return (
     <Panel title="热门服务" extra={<MoreLink to="/service" />}>
-      <div className="mg-iconbox mg-grid--4">
+      <div className="mg-iconbox mg-grid--4 mg-home__hotgrid">
         {HOT_SERVICES.map((s) => (
           <Link key={s.id} to={`/service/detail/${s.id}`} className="mg-iconbox__cell">
             <ServiceIcon className="mg-iconbox__icon" name={s.icon} width={34} height={34} />

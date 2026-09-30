@@ -383,7 +383,8 @@ export default function StatePage(props: StatePageProps) {
         </div>
       </Alert>
 
-      <div className="mg-layout-2col">
+      {/* mg-local-layout：仅用于窄屏重排（要闻与统计在前，概况与服务入口在后） */}
+      <div className="mg-layout-2col mg-local-layout">
         {/* ---------------- 左栏 ---------------- */}
         <div className="mg-layout__side">
           <Panel title="本州概况" variant="navy">

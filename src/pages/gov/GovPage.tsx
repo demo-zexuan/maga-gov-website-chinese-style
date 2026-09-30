@@ -201,13 +201,13 @@ export default function GovPage({ tab }: GovPageProps) {
                 {isPersonnel && (
                   <>
                     <div className="mg-sec-title">领导任免公告</div>
-                    <div className="mg-gov__table-wrap">
+                    <div className="mg-table-scroll mg-gov__table-wrap">
                       <table className="mg-table mg-table--compact mg-gov__table">
                         <thead>
                           <tr>
                             <th style={{ width: 120 }}>姓名</th>
                             <th style={{ width: 200 }}>职务</th>
-                            <th>分管工作</th>
+                            <th className="mg-gov__col-scope">分管工作</th>
                             <th style={{ width: 140 }}>任免文号</th>
                             <th style={{ width: 100 }}>任免日期</th>
                             <th style={{ width: 230 }}>备注</th>

@@ -783,7 +783,7 @@ export function LoginPage() {
             <Field label="验证码" required hint="区分大小写；看不清可点击换一张，换一张功能维护中">
               <div className="mg-static__captcha">
                 <input
-                  className="mg-input"
+                  className="mg-input mg-static__captcha-input"
                   value={captcha}
                   onChange={(e) => setCaptcha(e.target.value)}
                   style={{ flex: '1 1 auto' }}

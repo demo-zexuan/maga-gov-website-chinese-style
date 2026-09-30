@@ -1,0 +1,274 @@
+/**
+ * party 模块响应式适配
+ *
+ * I. 归属
+ *
+ * 本文件由 party 模块负责人维护，只允许写该模块自己的选择器。
+ * 加载顺序在 styles/responsive.css（Lead 的地基）之后，因此可以覆盖地基。
+ *
+ * II. 断点约定（与地基一致，不要新增断点）
+ *
+ * 1. `max-width: 1399px` 紧凑桌面
+ * 2. `max-width: 1023px` 平板
+ * 3. `max-width: 767px`  手机
+ * 4. `max-width: 420px`  小屏手机
+ *
+ * III. 硬约束
+ *
+ * 1. 不得影响 ≥1400px 的桌面版式（参考图还原区）。
+ * 2. 不得出现横向滚动：手机端任何元素都不应超出 100vw。
+ * 3. 表格类内容必须可横向滚动查看，不允许被裁切。
+ * 4. 出现内容截断时优先"换行/堆叠"，不要用 `display:none` 藏掉信息，
+ *    除非该信息确实是纯装饰。
+ *
+ * IV. 本模块在窄屏上的三个关键问题
+ *
+ * 1. 红色横幅是「徽记 + 标语 + 得分牌」三件并排，390px 下标语被挤到每行
+ *    只剩两三个字。处理办法：得分牌换行独占一行并改为横向排布。
+ * 2. 核心理念块是两列网格，窄屏下一列放不下「英文副题 + 正文 + 践行要求」。
+ * 3. 详情页的正文、学习园地计数器、答题窗本身不溢出，只需微调字号。
+ *
+ * @module styles/responsive/party
+ * @author zexuan.peng <pengzexuan2001@gmail.com>
+ * @created 2026-09-30
+ */
+
+/* ============================================================
+   I. ≤1399px 紧凑桌面
+   ============================================================ */
+
+@media (max-width: 1399px) {
+  /* 标语在 1200px 附近会换行，降一档字号可以保持一行 */
+  .mg-party-banner__main {
+    font-size: var(--fs-20);
+    letter-spacing: 1px;
+  }
+
+  .mg-party-banner__seal {
+    width: 104px;
+  }
+
+  .mg-party-banner__seal-score {
+    font-size: var(--fs-28);
+  }
+}
+
+/* ============================================================
+   II. ≤1023px 平板
+   ============================================================ */
+
+@media (max-width: 1023px) {
+  /* ---------- 红色横幅 ---------- */
+
+  .mg-party-banner {
+    gap: 10px;
+    padding: 10px 12px;
+  }
+
+  .mg-party-banner__emblem svg {
+    width: 48px;
+    height: 48px;
+  }
+
+  .mg-party-banner__main {
+    font-size: var(--fs-18);
+    letter-spacing: 1px;
+  }
+
+  .mg-party-banner__sub {
+    font-size: var(--fs-12);
+    line-height: 1.6;
+  }
+
+  .mg-party-banner__meta {
+    font-size: var(--fs-10);
+    line-height: 1.7;
+  }
+
+  .mg-party-banner__seal {
+    width: 96px;
+  }
+
+  .mg-party-banner__seal-score {
+    font-size: var(--fs-24);
+  }
+
+  /* ---------- 核心理念块：两列仍然成立，但内边距收紧 ---------- */
+
+  .mg-party-quote.mg-party-principle {
+    padding: 10px;
+  }
+
+  /* ---------- 列表头说明文字换行 ---------- */
+
+  .mg-party-listhead__blurb {
+    font-size: var(--fs-10);
+  }
+}
+
+/* ============================================================
+   III. ≤767px 手机
+   ============================================================ */
+
+@media (max-width: 767px) {
+  /* ---------- 1. 红色横幅：徽记 + 标语一行，得分牌独占一行 ---------- */
+
+  .mg-party-banner {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .mg-party-banner__emblem svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  /* flex-basis: 0 让标语吃掉徽记之外的全部宽度，不再被得分牌挤压 */
+  .mg-party-banner__text {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .mg-party-banner__main {
+    font-size: var(--fs-16);
+    letter-spacing: 0;
+    line-height: 1.4;
+  }
+
+  .mg-party-banner__sub {
+    font-size: var(--fs-11);
+    line-height: 1.7;
+  }
+
+  .mg-party-banner__meta {
+    font-size: var(--fs-10);
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+  }
+
+  /* 得分牌换行，横排显示，不再占一列 */
+  .mg-party-banner__seal {
+    flex: 1 1 100%;
+    width: auto;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 5px 8px;
+    text-align: left;
+  }
+
+  .mg-party-banner__seal-score {
+    font-size: var(--fs-20);
+    line-height: 1.1;
+  }
+
+  .mg-party-banner__seal-line,
+  .mg-party-banner__seal-note {
+    font-size: var(--fs-10);
+  }
+
+  .mg-party-banner__seal-note {
+    margin-left: auto;
+    margin-top: 0;
+    white-space: nowrap;
+  }
+
+  /* ---------- 2. 核心理念块：两列 → 一列 ---------- */
+
+  .mg-party-principles {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .mg-party-principle__desc {
+    font-size: var(--fs-12);
+    line-height: 1.7;
+  }
+
+  /* ---------- 3. 列表头：说明文字换行，不再与计数挤在一行 ---------- */
+
+  .mg-party-listhead {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  /* ---------- 4. 三栏重排：主内容 → 学习园地 → 栏目标签 + 考核指标 ---------- */
+
+  .mg-party-layout > .mg-layout__right {
+    order: 2;
+  }
+
+  .mg-party-layout > .mg-layout__left {
+    order: 3;
+  }
+
+  /* ---------- 5. 学习园地与答题窗 ---------- */
+
+  .mg-party-study__counter {
+    align-items: flex-end;
+  }
+
+  .mg-party-study__num {
+    font-size: var(--fs-28);
+  }
+
+  .mg-party-study__actions .mg-btn {
+    width: 100%;
+  }
+
+  .mg-party-quiz__q {
+    font-size: var(--fs-14);
+  }
+
+  .mg-party-quiz__result {
+    font-size: var(--fs-14);
+    padding: 8px 10px;
+  }
+
+  /* ---------- 6. 详情页 ---------- */
+
+  .mg-article__foot .mg-btn {
+    width: 100%;
+  }
+
+  .mg-party-detail__tags {
+    gap: 4px;
+  }
+}
+
+/* ============================================================
+   IV. ≤420px 小屏手机
+   ============================================================ */
+
+@media (max-width: 420px) {
+  .mg-party-banner__main {
+    font-size: var(--fs-15);
+  }
+
+  .mg-party-banner__emblem svg {
+    width: 34px;
+    height: 34px;
+  }
+
+  .mg-party-banner__seal {
+    flex-wrap: wrap;
+  }
+
+  .mg-party-banner__seal-note {
+    margin-left: 0;
+    flex: 1 1 100%;
+  }
+
+  .mg-party-study__num {
+    font-size: var(--fs-24);
+  }
+
+  .mg-party-principle__no {
+    width: 18px;
+    height: 16px;
+  }
+}

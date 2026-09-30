@@ -232,12 +232,12 @@ export default function UserPage() {
               本页办件数据每 30 分钟同步一次。同步时间为每日 00:00—24:00，同步期间数据不更新，
               属正常现象，不影响办件本身。
             </Alert>
-            <div className="mg-gov__table-wrap">
+            <div className="mg-table-scroll mg-gov__table-wrap">
               <table className="mg-table mg-table--compact mg-gov__table">
                 <thead>
                   <tr>
                     <th style={{ width: 150 }}>办件编号</th>
-                    <th>事项名称</th>
+                    <th className="mg-gov__col-item">事项名称</th>
                     <th style={{ width: 100 }}>提交日期</th>
                     <th style={{ width: 110 }}>当前状态</th>
                     <th style={{ width: 100 }}>预计办结</th>

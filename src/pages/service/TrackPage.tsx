@@ -274,58 +274,60 @@ export default function TrackPage() {
                 </span>
               </div>
 
-              <table className="mg-table" style={{ marginTop: 8 }}>
-                <tbody>
-                  <tr>
-                    <th style={{ width: 150 }}>受理编号</th>
-                    <td>{no}</td>
-                    <th style={{ width: 150 }}>办件状态</th>
-                    <td>{record ? record.status : '系统中未查询到（按已受理显示）'}</td>
-                  </tr>
-                  <tr>
-                    <th>事项名称</th>
-                    <td>{record ? record.serviceName : '综合受理事项'}</td>
-                    <th>承办窗口</th>
-                    <td>{record ? record.window : 'A-01 综合受理'}</td>
-                  </tr>
-                  <tr>
-                    <th>受理日期</th>
-                    <td>{record ? record.applyDate : SERVICE_TODAY}</td>
-                    <th>当前环节</th>
-                    <td>
-                      {record && record.status === '已办结'
-                        ? '已办结（共 3 个环节）'
-                        : '终审（第 3 个环节，共 3 个环节）'}
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>已办用时</th>
-                    <td>47 个工作日</td>
-                    <th>承诺办结时限</th>
-                    <td>15 个工作日</td>
-                  </tr>
-                  <tr>
-                    <th>超期天数</th>
-                    <td>32 个工作日（状态：正常办理中）</td>
-                    <th>队列前方</th>
-                    <td>3,412 位（与上次查询一致）</td>
-                  </tr>
-                  <tr>
-                    <th>上次进度变化</th>
-                    <td>1,284 天前</td>
-                    <th>当前进度</th>
-                    <td>
-                      {percent}%（系统保留 1%）
-                    </td>
-                  </tr>
-                  {record?.remark && (
+              <div className="mg-table-scroll mg-svc-scroll--track">
+                <table className="mg-table" style={{ marginTop: 8 }}>
+                  <tbody>
                     <tr>
-                      <th>办件备注</th>
-                      <td colSpan={3}>{record.remark}</td>
+                      <th style={{ width: 150 }}>受理编号</th>
+                      <td>{no}</td>
+                      <th style={{ width: 150 }}>办件状态</th>
+                      <td>{record ? record.status : '系统中未查询到（按已受理显示）'}</td>
                     </tr>
-                  )}
-                </tbody>
-              </table>
+                    <tr>
+                      <th>事项名称</th>
+                      <td>{record ? record.serviceName : '综合受理事项'}</td>
+                      <th>承办窗口</th>
+                      <td>{record ? record.window : 'A-01 综合受理'}</td>
+                    </tr>
+                    <tr>
+                      <th>受理日期</th>
+                      <td>{record ? record.applyDate : SERVICE_TODAY}</td>
+                      <th>当前环节</th>
+                      <td>
+                        {record && record.status === '已办结'
+                          ? '已办结（共 3 个环节）'
+                          : '终审（第 3 个环节，共 3 个环节）'}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>已办用时</th>
+                      <td>47 个工作日</td>
+                      <th>承诺办结时限</th>
+                      <td>15 个工作日</td>
+                    </tr>
+                    <tr>
+                      <th>超期天数</th>
+                      <td>32 个工作日（状态：正常办理中）</td>
+                      <th>队列前方</th>
+                      <td>3,412 位（与上次查询一致）</td>
+                    </tr>
+                    <tr>
+                      <th>上次进度变化</th>
+                      <td>1,284 天前</td>
+                      <th>当前进度</th>
+                      <td>
+                        {percent}%（系统保留 1%）
+                      </td>
+                    </tr>
+                    {record?.remark && (
+                      <tr>
+                        <th>办件备注</th>
+                        <td colSpan={3}>{record.remark}</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
 
               <div className="mg-svc-track__actions">
                 <Button variant="primary" size="sm" onClick={onRefresh}>
@@ -362,27 +364,29 @@ export default function TrackPage() {
                 <div>暂无查询记录。本栏目自您首次查询起有内容。</div>
               </div>
             ) : (
-              <table className="mg-table mg-table--compact">
-                <thead>
-                  <tr>
-                    <th style={{ width: 46 }}>序号</th>
-                    <th>查询时间</th>
-                    <th style={{ width: 70 }}>进度</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {logs
-                    .slice()
-                    .reverse()
-                    .map((l) => (
-                      <tr key={l.seq}>
-                        <td style={{ textAlign: 'center' }}>{l.seq}</td>
-                        <td>{l.time}</td>
-                        <td style={{ textAlign: 'center' }}>{l.percent}%</td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
+              <div className="mg-table-scroll mg-svc-scroll--log">
+                <table className="mg-table mg-table--compact">
+                  <thead>
+                    <tr>
+                      <th style={{ width: 46 }}>序号</th>
+                      <th>查询时间</th>
+                      <th style={{ width: 70 }}>进度</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {logs
+                      .slice()
+                      .reverse()
+                      .map((l) => (
+                        <tr key={l.seq}>
+                          <td style={{ textAlign: 'center' }}>{l.seq}</td>
+                          <td>{l.time}</td>
+                          <td style={{ textAlign: 'center' }}>{l.percent}%</td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
             )}
             <div className="mg-svc-note">
               同一编号多次查询的进度差值恒为 0。差值为 0 表示办件状态稳定。

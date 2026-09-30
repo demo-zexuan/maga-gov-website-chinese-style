@@ -261,74 +261,80 @@ export default function ServiceDetailPage({ id }: { id: string }) {
                 <div>本事项无需提交材料。如系统提示缺少材料，请以系统提示为准。</div>
               </div>
             ) : (
-              <table className="mg-table">
-                <thead>
-                  <tr>
-                    <th style={{ width: 44 }}>序号</th>
-                    <th>材料名称</th>
-                    <th style={{ width: 130 }}>份数</th>
-                    <th style={{ width: 140 }}>形式要求</th>
-                    <th>备注</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {svc.materials.map((m, i) => (
-                    <tr key={m}>
-                      <td style={{ textAlign: 'center' }}>{i + 1}</td>
-                      <td>{m}</td>
-                      <td>{i === 0 ? '原件 1 份' : i % 3 === 0 ? '原件 1 份、复印件 2 份' : '复印件 2 份'}</td>
-                      <td>{MATERIAL_FORMS[i % MATERIAL_FORMS.length]}</td>
-                      <td>{MATERIAL_REMARKS[i % MATERIAL_REMARKS.length]}</td>
+              <div className="mg-table-scroll mg-svc-scroll--material">
+                <table className="mg-table">
+                  <thead>
+                    <tr>
+                      <th style={{ width: 44 }}>序号</th>
+                      <th>材料名称</th>
+                      <th style={{ width: 130 }}>份数</th>
+                      <th style={{ width: 140 }}>形式要求</th>
+                      <th>备注</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {svc.materials.map((m, i) => (
+                      <tr key={m}>
+                        <td style={{ textAlign: 'center' }}>{i + 1}</td>
+                        <td>{m}</td>
+                        <td>
+                          {i === 0 ? '原件 1 份' : i % 3 === 0 ? '原件 1 份、复印件 2 份' : '复印件 2 份'}
+                        </td>
+                        <td>{MATERIAL_FORMS[i % MATERIAL_FORMS.length]}</td>
+                        <td>{MATERIAL_REMARKS[i % MATERIAL_REMARKS.length]}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </Panel>
 
           <Panel title="办理信息" flush>
-            <table className="mg-table">
-              <tbody>
-                <tr>
-                  <th style={{ width: 140 }}>主管部门</th>
-                  <td>{svc.department}</td>
-                  <th style={{ width: 140 }}>是否面签</th>
-                  <td>{svc.faceToFace ? '需要本人到场' : '无需本人到场（结果仍可能要求到场领取）'}</td>
-                </tr>
-                <tr>
-                  <th>承诺办结时限</th>
-                  <td>
-                    {svc.duration}
-                    <div className="mg-svc-note">承诺时限自材料齐全之日起计算。材料是否齐全由受理窗口认定。</div>
-                  </td>
-                  <th>法定办结时限</th>
-                  <td>
-                    {svc.legalDuration}
-                    <div className="mg-svc-note">自受理之日起计算；受理之日的认定另见《受理之日认定办法》。</div>
-                  </td>
-                </tr>
-                <tr>
-                  <th>收费标准</th>
-                  <td>
-                    {svc.fee}
-                    <div className="mg-svc-note">费用不含复印件费用、照片费用与前往网点的交通费用。</div>
-                  </td>
-                  <th>在线办理</th>
-                  <td>
-                    {svc.online ? '支持在线申请，仍需现场核验一次' : '不支持在线办理，本页按钮仅用于预约登记'}
-                  </td>
-                </tr>
-                <tr>
-                  <th>办理地点</th>
-                  <td>{OFFICES[0].address}</td>
-                  <th>咨询电话</th>
-                  <td>
-                    (202) 555-0147
-                    <div className="mg-svc-note">接听时间：工作日上午 09:00-09:15。占线请挂机重拨，不提供回拨。</div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <div className="mg-table-scroll mg-svc-scroll--info">
+              <table className="mg-table">
+                <tbody>
+                  <tr>
+                    <th style={{ width: 140 }}>主管部门</th>
+                    <td>{svc.department}</td>
+                    <th style={{ width: 140 }}>是否面签</th>
+                    <td>{svc.faceToFace ? '需要本人到场' : '无需本人到场（结果仍可能要求到场领取）'}</td>
+                  </tr>
+                  <tr>
+                    <th>承诺办结时限</th>
+                    <td>
+                      {svc.duration}
+                      <div className="mg-svc-note">承诺时限自材料齐全之日起计算。材料是否齐全由受理窗口认定。</div>
+                    </td>
+                    <th>法定办结时限</th>
+                    <td>
+                      {svc.legalDuration}
+                      <div className="mg-svc-note">自受理之日起计算；受理之日的认定另见《受理之日认定办法》。</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>收费标准</th>
+                    <td>
+                      {svc.fee}
+                      <div className="mg-svc-note">费用不含复印件费用、照片费用与前往网点的交通费用。</div>
+                    </td>
+                    <th>在线办理</th>
+                    <td>
+                      {svc.online ? '支持在线申请，仍需现场核验一次' : '不支持在线办理，本页按钮仅用于预约登记'}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>办理地点</th>
+                    <td>{OFFICES[0].address}</td>
+                    <th>咨询电话</th>
+                    <td>
+                      (202) 555-0147
+                      <div className="mg-svc-note">接听时间：工作日上午 09:00-09:15。占线请挂机重拨，不提供回拨。</div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </Panel>
 
           <Panel title="受理条件与注意事项">
@@ -463,42 +469,44 @@ export default function ServiceDetailPage({ id }: { id: string }) {
               <Progress percent={percent} />
               <div className="mg-svc-flow__caption">正在上传材料…完整度 {percent}%</div>
             </div>
-            <table className="mg-table mg-table--compact">
-              <thead>
-                <tr>
-                  <th style={{ width: 40 }}>序号</th>
-                  <th>材料名称</th>
-                  <th style={{ width: 150 }}>状态</th>
-                </tr>
-              </thead>
-              <tbody>
-                {(svc.materials.length > 0
-                  ? svc.materials
-                  : ['无需提交材料（系统仍要求上传 1 项）']
-                ).map((m, i) => {
-                  const per = 100 / Math.max(1, svc.materials.length);
-                  const own = Math.max(0, Math.min(100, Math.round(((percent - i * per) / per) * 100)));
-                  const skipped = i === 2 && svc.materials.length > 2;
-                  return (
-                    <tr key={`${m}-${i}`}>
-                      <td style={{ textAlign: 'center' }}>{i + 1}</td>
-                      <td>{m}</td>
-                      <td style={{ textAlign: 'center' }}>
-                        {skipped ? (
-                          <span className="mg-svc-flow__skip">已跳过（推荐）</span>
-                        ) : own >= 100 ? (
-                          '已完成'
-                        ) : own > 0 ? (
-                          `上传中 ${own}%`
-                        ) : (
-                          '等待上传'
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            <div className="mg-table-scroll mg-svc-scroll--flow">
+              <table className="mg-table mg-table--compact">
+                <thead>
+                  <tr>
+                    <th style={{ width: 40 }}>序号</th>
+                    <th>材料名称</th>
+                    <th style={{ width: 150 }}>状态</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(svc.materials.length > 0
+                    ? svc.materials
+                    : ['无需提交材料（系统仍要求上传 1 项）']
+                  ).map((m, i) => {
+                    const per = 100 / Math.max(1, svc.materials.length);
+                    const own = Math.max(0, Math.min(100, Math.round(((percent - i * per) / per) * 100)));
+                    const skipped = i === 2 && svc.materials.length > 2;
+                    return (
+                      <tr key={`${m}-${i}`}>
+                        <td style={{ textAlign: 'center' }}>{i + 1}</td>
+                        <td>{m}</td>
+                        <td style={{ textAlign: 'center' }}>
+                          {skipped ? (
+                            <span className="mg-svc-flow__skip">已跳过（推荐）</span>
+                          ) : own >= 100 ? (
+                            '已完成'
+                          ) : own > 0 ? (
+                            `上传中 ${own}%`
+                          ) : (
+                            '等待上传'
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
             <div className="mg-svc-note">
               第 3 项材料上传失败（该文件格式不受支持：PDF）。系统已自动跳过。跳过不影响本次办理结果。
             </div>

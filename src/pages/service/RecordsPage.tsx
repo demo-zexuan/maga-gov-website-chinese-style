@@ -218,40 +218,42 @@ export default function RecordsPage() {
               </div>
             </div>
           ) : (
-            <table className="mg-table">
-              <thead>
-                <tr>
-                  <th style={{ width: 160 }}>办件编号</th>
-                  <th style={{ width: 150 }}>办理事项</th>
-                  <th style={{ width: 130 }}>申请人</th>
-                  <th style={{ width: 92 }}>受理日期</th>
-                  <th style={{ width: 92 }}>办结日期</th>
-                  <th style={{ width: 72 }}>状态</th>
-                  <th style={{ width: 140 }}>承办窗口</th>
-                  <th style={{ width: 60 }}>评价</th>
-                  <th>公示备注</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((r) => (
-                  <tr key={r.id}>
-                    <td className="mg-svc-mono">{r.id}</td>
-                    <td>{r.serviceName}</td>
-                    <td>{r.applicant}</td>
-                    <td className="mg-svc-mono">{r.applyDate}</td>
-                    <td className="mg-svc-mono">{r.finishDate ?? '—'}</td>
-                    <td style={{ textAlign: 'center' }}>
-                      <span className="mg-svc-status" data-status={r.status}>
-                        {r.status}
-                      </span>
-                    </td>
-                    <td>{r.window}</td>
-                    <td style={{ textAlign: 'center' }}>{r.score.toFixed(1)}</td>
-                    <td className="mg-svc-remark">{r.remark ?? '无'}</td>
+            <div className="mg-table-scroll mg-svc-scroll--records">
+              <table className="mg-table">
+                <thead>
+                  <tr>
+                    <th style={{ width: 160 }}>办件编号</th>
+                    <th style={{ width: 150 }}>办理事项</th>
+                    <th style={{ width: 130 }}>申请人</th>
+                    <th style={{ width: 92 }}>受理日期</th>
+                    <th style={{ width: 92 }}>办结日期</th>
+                    <th style={{ width: 72 }}>状态</th>
+                    <th style={{ width: 140 }}>承办窗口</th>
+                    <th style={{ width: 60 }}>评价</th>
+                    <th>公示备注</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {rows.map((r) => (
+                    <tr key={r.id}>
+                      <td className="mg-svc-mono">{r.id}</td>
+                      <td>{r.serviceName}</td>
+                      <td>{r.applicant}</td>
+                      <td className="mg-svc-mono">{r.applyDate}</td>
+                      <td className="mg-svc-mono">{r.finishDate ?? '—'}</td>
+                      <td style={{ textAlign: 'center' }}>
+                        <span className="mg-svc-status" data-status={r.status}>
+                          {r.status}
+                        </span>
+                      </td>
+                      <td>{r.window}</td>
+                      <td style={{ textAlign: 'center' }}>{r.score.toFixed(1)}</td>
+                      <td className="mg-svc-remark">{r.remark ?? '无'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
 
           <div className="mg-svc-pager">

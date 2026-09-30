@@ -30,11 +30,25 @@ body {
   font-family: var(--font-song);
   font-size: var(--fs-12);
   line-height: 1.6;
+  /* 桌面端保留横向滚动兜底；移动端由 responsive.css 关闭 */
   overflow-x: auto;
 }
 
+/*
+ * 定宽 vs 流式
+ *
+ * 参考图的版式基准是 1400px，因此 ≥1400px 的视口下锁定 1400px 宽，
+ * 保证桌面观感与参考图一致；低于该宽度时不锁死，交给 responsive.css
+ * 逐级折叠，否则手机上会出现整页横向滚动。
+ */
 #root {
-  min-width: var(--layout-width);
+  min-width: 0;
+}
+
+@media (min-width: 1400px) {
+  #root {
+    min-width: var(--layout-width);
+  }
 }
 
 h1,
@@ -114,7 +128,8 @@ textarea:focus {
 /* ============ 通用工具类（全站共用，Sub 请优先复用） ============ */
 
 .mg-container {
-  width: var(--layout-width);
+  width: 100%;
+  max-width: var(--layout-width);
   margin: 0 auto;
   background: var(--c-white);
 }

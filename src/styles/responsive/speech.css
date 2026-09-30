@@ -1,0 +1,448 @@
+/**
+ * speech 模块响应式适配
+ *
+ * I. 覆盖范围
+ *
+ * 1. 栏目页 `.mg-speech-banner`（红色横幅）/ `.mg-speech-top`（头条块）
+ * 2. 「重要讲话」tab：`.mg-searchbar`（全文检索）/ `.mg-rank`（热门 TOP5）/
+ *    `.mg-points`（讲话要点）/ `.mg-info-list`
+ * 3. 「每日推文」tab：`.mg-tw-feed` / `.mg-tw`（信息流卡片）/ `.mg-tw-composer`
+ *    （永远发不出去的发布框）/ `.mg-tw-more`
+ * 4. 「记者会实录」tab：`.mg-press`（场次卡片）/ `.mg-qa`（问答对）
+ * 5. 详情页：`.mg-attach`（附件）/ `.mg-speech-foot` / `.mg-speech-noprint`
+ *
+ * II. 设计取舍
+ *
+ * 1. 推文信息流是这个模块最像"现代 UI"的部分（头像 + 主体两列）。
+ *    窄屏**保留两列结构**而不是堆叠 —— 头像一旦换行到顶部，整条推文
+ *    就不再像信息流了。只把头像从 48px 收到 36px，正文改用更紧的行高。
+ * 2. 记者会的问答对靠左侧色块区分「记者 / 发言人」，窄屏保留色块，
+ *    只把内边距收窄；颜色区分一旦去掉，读者分不清谁在说话。
+ * 3. 所有规则都在 `@media (max-width: …)` 内，≥1400px 的桌面版式不受影响。
+ *
+ * @module styles/responsive/speech
+ * @author zexuan.peng <pengzexuan2001@gmail.com>
+ * @created 2026-09-30
+ */
+
+/* ============================================================
+   ≤1399px 紧凑桌面
+   ============================================================ */
+
+@media (max-width: 1399px) {
+  .mg-speech-banner__title {
+    font-size: 20px;
+  }
+
+  .mg-speech-banner__quote {
+    font-size: var(--fs-13);
+  }
+
+  .mg-tw__text {
+    font-size: var(--fs-13);
+  }
+
+  .mg-press__title {
+    font-size: var(--fs-15);
+  }
+}
+
+/* ============================================================
+   ≤1023px 平板
+   ============================================================ */
+
+@media (max-width: 1023px) {
+  /* ---------- 红色横幅：标语与战绩堆叠 ---------- */
+
+  .mg-speech-banner {
+    padding: 12px 14px;
+  }
+
+  .mg-speech-banner__main {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .mg-speech-banner__title {
+    font-size: var(--fs-18);
+    line-height: 1.4;
+  }
+
+  .mg-speech-banner__quote {
+    font-size: var(--fs-12);
+    line-height: 1.7;
+  }
+
+  .mg-speech-banner__from {
+    text-align: left;
+  }
+
+  /* 战绩栏由"右侧竖排"改为"底部横排可换行" */
+  .mg-speech-banner__stats {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 6px 18px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+  }
+
+  .mg-speech-banner__stat {
+    flex: 0 0 auto;
+    text-align: left;
+  }
+
+  .mg-speech-banner__num {
+    font-size: 20px;
+  }
+
+  /* ---------- 头条块 ---------- */
+
+  .mg-speech-top {
+    padding: 10px 12px;
+  }
+
+  .mg-speech-top__title {
+    font-size: var(--fs-16);
+    line-height: 1.5;
+  }
+
+  .mg-speech-top__meta {
+    flex-wrap: wrap;
+    gap: 4px 12px;
+  }
+
+  /* ---------- 全文检索 ---------- */
+
+  .mg-searchbar {
+    padding: 8px 10px;
+  }
+
+  .mg-searchbar__input {
+    width: 100%;
+    min-height: 34px;
+  }
+
+  .mg-searchbar__count,
+  .mg-searchbar__hint {
+    display: block;
+    margin: 4px 0 0;
+  }
+
+  .mg-searchbar__item {
+    flex-wrap: wrap;
+    gap: 2px 8px;
+  }
+
+  .mg-searchbar__title {
+    flex: 1 1 100%;
+  }
+
+  /* ---------- 推文信息流 ---------- */
+
+  .mg-tw-feed {
+    padding: 0;
+  }
+
+  .mg-tw {
+    padding: 10px 12px;
+  }
+
+  .mg-tw__head {
+    flex-wrap: wrap;
+    gap: 2px 6px;
+  }
+
+  /* 认证角标与时间在窄屏跟到下一行，避免把用户名挤成省略号 */
+  .mg-tw__time {
+    flex: 1 1 100%;
+    text-align: left;
+  }
+
+  .mg-tw__text {
+    font-size: var(--fs-13);
+    line-height: 1.75;
+  }
+
+  .mg-tw__note {
+    font-size: var(--fs-11);
+  }
+
+  .mg-tw__acts {
+    gap: 16px;
+  }
+
+  .mg-tw__act {
+    min-height: 32px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* ---------- 发布框 ---------- */
+
+  .mg-tw-composer__main {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .mg-tw-composer__input {
+    width: 100%;
+    min-height: 64px;
+  }
+
+  .mg-tw-composer__bar {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .mg-tw-composer__count {
+    margin-left: 0;
+  }
+
+  /* ---------- 记者会 ---------- */
+
+  .mg-press {
+    padding: 10px 12px;
+  }
+
+  .mg-press__head {
+    flex-wrap: wrap;
+    gap: 4px 10px;
+  }
+
+  .mg-press__title {
+    flex: 1 1 100%;
+    font-size: var(--fs-15);
+  }
+
+  .mg-press__meta {
+    flex-wrap: wrap;
+    gap: 3px 12px;
+  }
+
+  .mg-press__summary {
+    font-size: var(--fs-12);
+    line-height: 1.75;
+  }
+
+  /*
+   * 问答对：保留左侧色块（记者红 / 发言人藏青 / 场景灰底）。
+   * 色块是读者区分"谁在说话"的唯一线索，不能为了省宽度去掉。
+   */
+  .mg-qa {
+    padding: 8px 10px;
+    font-size: var(--fs-13);
+    line-height: 1.8;
+  }
+
+  .mg-qa__who {
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  /* ---------- 列表 / 附件 ---------- */
+
+  .mg-points__item {
+    flex-wrap: wrap;
+    gap: 2px 8px;
+  }
+
+  .mg-rank__item {
+    flex-wrap: wrap;
+  }
+
+  .mg-rank__text {
+    flex: 1 1 100%;
+  }
+
+  .mg-info-list__row {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .mg-info-list__label {
+    text-align: left;
+    flex: 1 1 auto;
+  }
+
+  .mg-attach__item {
+    flex-wrap: wrap;
+    gap: 2px 8px;
+  }
+
+  .mg-attach__meta {
+    flex: 1 1 100%;
+  }
+
+  .mg-speech-foot {
+    flex-wrap: wrap;
+    gap: 6px 12px;
+  }
+}
+
+/* ============================================================
+   ≤767px 手机
+   ============================================================ */
+
+@media (max-width: 767px) {
+  /* ---------- 横幅 ---------- */
+
+  .mg-speech-banner {
+    padding: 10px 12px;
+  }
+
+  .mg-speech-banner__title {
+    font-size: var(--fs-16);
+    letter-spacing: 0;
+  }
+
+  .mg-speech-banner__kicker {
+    font-size: var(--fs-11);
+  }
+
+  .mg-speech-banner__stats {
+    gap: 4px 14px;
+  }
+
+  .mg-speech-banner__num {
+    font-size: var(--fs-18);
+  }
+
+  /* ---------- 推文：保住两列信息流结构 ---------- */
+
+  .mg-tw {
+    padding: 9px 10px;
+    gap: 8px;
+  }
+
+  /* 头像缩小但不换行 —— 一旦堆叠就不像信息流了 */
+  .mg-tw__avatar {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+  }
+
+  .mg-tw__name {
+    font-size: var(--fs-13);
+  }
+
+  .mg-tw__handle {
+    font-size: var(--fs-11);
+  }
+
+  .mg-tw__text {
+    font-size: var(--fs-13);
+    line-height: 1.7;
+    /* 长 URL / 长英文串不能撑破卡片 */
+    overflow-wrap: anywhere;
+  }
+
+  .mg-tw__acts {
+    gap: 14px;
+    font-size: var(--fs-11);
+  }
+
+  /* ---------- 检索 ---------- */
+
+  .mg-searchbar__list {
+    max-height: none;
+  }
+
+  /* ---------- 记者会 ---------- */
+
+  .mg-press {
+    padding: 9px 10px;
+  }
+
+  .mg-qa {
+    padding: 7px 9px;
+    font-size: var(--fs-12);
+  }
+
+  /* ---------- 排行 / 要点 ---------- */
+
+  .mg-rank__no,
+  .mg-points__no {
+    flex: 0 0 auto;
+  }
+
+  .mg-rank__num {
+    margin-left: 0;
+    flex: 1 1 100%;
+    text-align: left;
+  }
+
+  /* ---------- 详情页正文 ---------- */
+
+  .mg-attach__name {
+    overflow-wrap: anywhere;
+  }
+
+  /* 打印按钮组在手机上不再固定悬浮，避免压住正文 */
+  .mg-speech-noprint {
+    position: static;
+    margin-top: 8px;
+  }
+}
+
+/* ============================================================
+   ≤420px 小屏手机
+   ============================================================ */
+
+@media (max-width: 420px) {
+  /*
+   * 320px 极窄屏：横幅战绩栏必须强制收在容器内
+   *
+   * `.mg-speech-banner__stats` 在 ≤1023 被设为 width:100%，但横幅本身带
+   * 左右内边距，320px 下内容盒 + 内边距会超出视口 11px。这里把三层都
+   * 加上 border-box + max-width 约束，并把数字再收一档。
+   */
+  .mg-speech-banner,
+  .mg-speech-banner__main,
+  .mg-speech-banner__stats {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .mg-speech-banner {
+    padding: 8px 10px;
+  }
+
+  .mg-speech-banner__stats {
+    gap: 4px 10px;
+  }
+
+  .mg-speech-banner__stat {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  .mg-speech-banner__num {
+    font-size: var(--fs-14);
+  }
+
+  .mg-speech-banner__unit {
+    font-size: var(--fs-11);
+  }
+
+  .mg-tw__avatar {
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+  }
+
+  .mg-tw__acts {
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  /* 极窄屏把"评论/转发/点赞"数字与文字之间再收紧 */
+  .mg-tw__act {
+    font-size: var(--fs-10);
+  }
+
+  .mg-qa {
+    font-size: var(--fs-12);
+  }
+}

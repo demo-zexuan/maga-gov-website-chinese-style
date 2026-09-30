@@ -1,25 +1,30 @@
 #!/usr/bin/env node
 /**
- * 站内静态素材生成器（零依赖、离线可重现）
+ * 站内矢量素材生成器（零依赖、离线可重现）
  *
  * I. 这个脚本干什么
  *
- * 1. 一次性生成 `public/assets/` 下的全部矢量素材，供首页与各栏目页直接引用。
+ * 1. 生成 `public/assets/` 下的**矢量**素材：二维码、地图、三个徽记。
  * 2. 生成过程不联网、不读取外部图片、不引入任何 npm 依赖，只写 SVG 文本，
  *    因此构建是可离线重现的（同一份脚本永远产出逐字节相同的文件）。
  *
- * II. 素材清单
+ * II. 关于照片位
  *
- * 1. hero-1 ~ hero-5 —— 首页轮播 16:9 配图（演讲台 / 国会山 / 白宫 / 集会 / 签令）
- * 2. trump-portrait   —— 金发人物剪影头像（右栏横幅用）
- * 3. veterans         —— 致敬退伍军人配图
- * 4. desert           —— 沙漠公路配图
- * 5. app-qr           —— 真正可扫描的二维码，内容为 USPCS-1776-2026
- * 6. us-map           —— 本土 48 州轮廓图
- * 7. eagle-emblem / elephant-emblem / seal —— 三个徽记
- * 8. press-1 ~ press-3 —— 领导活动小图 120×80
+ * 1. 首页轮播、左右栏横幅、领导活动小图已改用真实新闻照片，由
+ *    `scripts/fetch-photos.mjs` 抓取到 `public/assets/photos/`。
+ *    本脚本**默认不再输出**这些槽位的同名 SVG，以免将来误覆盖照片。
+ * 2. 那些场景画法（演讲台 / 国会山 / 白宫 / 集会 / 签令 / 人像 / 退伍军人 / 沙漠 /
+ *    领导活动小图）仍完整保留在本文件里，作为断网时的兜底素材：
+ *    加 `--with-fallback-svg` 会把它们输出到 `public/assets/fallback/` 子目录，
+ *    与照片互不干扰。
  *
- * III. 风格约定
+ * III. 输出的矢量素材
+ *
+ * 1. app-qr           —— 真正可扫描的二维码，内容为 USPCS-1776-2026
+ * 2. us-map           —— 本土 48 州轮廓图
+ * 3. eagle-emblem / elephant-emblem / seal —— 三个徽记
+ *
+ * IV. 风格约定
  *
  * 1. 平涂色块 + 粗描边 + 高饱和红/蓝/金/白，几何化剪影，刻意"土味矢量"，
  *    与 `src/components/art/index.tsx` 的内联 SVG 保持同一气质。
@@ -28,7 +33,7 @@
  * 3. SVG 内部不写中文。图片作为 `<img>` 引入时用的是浏览器的系统字体，
  *    中文缺字会变成方块；所有中文文案由页面 HTML 浮层承担。
  *
- * IV. 二维码实现
+ * V. 二维码实现
  *
  * 1. 脚本内置一个最小但完整的 QR 编码器：字节层面手写 GF(256) 有限域、
  *    Reed-Solomon 纠错、矩阵布点、8 种掩模与惩罚打分，全部按 ISO/IEC 18004 实现。
@@ -1439,19 +1444,36 @@ function pressRibbon() {
 
 /* ================= IV. 主流程 ================= */
 
-/** 待生成的文件清单：[文件名, 内容] */
+/**
+ * 断网兜底素材：这些槽位正式版用 `scripts/fetch-photos.mjs` 抓来的照片，
+ * 只有在拿不到照片时才会用到这套几何剪影，因此默认不输出，
+ * 需要时用 `--with-fallback-svg` 输出到 public/assets/fallback/。
+ */
+function fallbackFiles() {
+  return [
+    ['hero-1.svg', svgDoc(960, 540, heroPodium(), { slice: true, title: 'Podium' })],
+    ['hero-2.svg', svgDoc(960, 540, heroCapitol(), { slice: true, title: 'Capitol' })],
+    ['hero-3.svg', svgDoc(960, 540, heroWhiteHouse(), { slice: true, title: 'White House' })],
+    ['hero-4.svg', svgDoc(960, 540, heroRally(), { slice: true, title: 'Rally' })],
+    ['hero-5.svg', svgDoc(960, 540, heroSigning(), { slice: true, title: 'Signing' })],
+    ['trump-portrait.svg', svgDoc(300, 360, portraitTrump(), { slice: true, bg: C.navy, title: 'Portrait' })],
+    ['veterans.svg', svgDoc(320, 180, veteransScene(), { slice: true, title: 'Veterans' })],
+    ['desert.svg', svgDoc(320, 180, desertScene(), { slice: true, title: 'Desert Highway' })],
+    ['press-1.svg', svgDoc(120, 80, pressSpeech(), { title: 'Press 1' })],
+    ['press-2.svg', svgDoc(120, 80, pressMeeting(), { title: 'Press 2' })],
+    ['press-3.svg', svgDoc(120, 80, pressRibbon(), { title: 'Press 3' })],
+  ];
+}
+
+/**
+ * 正式输出的矢量素材清单
+ *
+ * 这些位置用矢量比用照片更合适：二维码要可扫描，地图要清楚，徽记要锐利。
+ *
+ * @returns { files, qr }
+ */
 function buildAll() {
   const files = [];
-
-  files.push(['hero-1.svg', svgDoc(960, 540, heroPodium(), { slice: true, title: 'Podium' })]);
-  files.push(['hero-2.svg', svgDoc(960, 540, heroCapitol(), { slice: true, title: 'Capitol' })]);
-  files.push(['hero-3.svg', svgDoc(960, 540, heroWhiteHouse(), { slice: true, title: 'White House' })]);
-  files.push(['hero-4.svg', svgDoc(960, 540, heroRally(), { slice: true, title: 'Rally' })]);
-  files.push(['hero-5.svg', svgDoc(960, 540, heroSigning(), { slice: true, title: 'Signing' })]);
-
-  files.push(['trump-portrait.svg', svgDoc(300, 360, portraitTrump(), { slice: true, bg: C.navy, title: 'Portrait' })]);
-  files.push(['veterans.svg', svgDoc(320, 180, veteransScene(), { slice: true, title: 'Veterans' })]);
-  files.push(['desert.svg', svgDoc(320, 180, desertScene(), { slice: true, title: 'Desert Highway' })]);
 
   // 二维码：内容固定，尺寸与版本由编码器自行选择
   const qr = qrEncode('USPCS-1776-2026');
@@ -1462,25 +1484,43 @@ function buildAll() {
   files.push(['elephant-emblem.svg', svgDoc(200, 200, elephantEmblem(), { title: 'Elephant Emblem' })]);
   files.push(['seal.svg', svgDoc(240, 240, sealEmblem(), { title: 'Seal' })]);
 
-  files.push(['press-1.svg', svgDoc(120, 80, pressSpeech(), { title: 'Press 1' })]);
-  files.push(['press-2.svg', svgDoc(120, 80, pressMeeting(), { title: 'Press 2' })]);
-  files.push(['press-3.svg', svgDoc(120, 80, pressRibbon(), { title: 'Press 3' })]);
-
   return { files, qr };
 }
 
-function main() {
-  mkdirSync(OUT_DIR, { recursive: true });
-  const { files, qr } = buildAll();
+/** 把清单写到指定目录，返回总字节数 */
+function emit(dir, files) {
+  mkdirSync(dir, { recursive: true });
   let bytes = 0;
   for (const [name, content] of files) {
-    writeFileSync(join(OUT_DIR, name), content, 'utf8');
-    bytes += Buffer.byteLength(content, 'utf8');
-    console.log(`  ✓ public/assets/${name}  ${(Buffer.byteLength(content, 'utf8') / 1024).toFixed(1)} KB`);
+    writeFileSync(join(dir, name), content, 'utf8');
+    const size = Buffer.byteLength(content, 'utf8');
+    bytes += size;
+    console.log(`  ✓ ${dir.slice(ROOT.length + 1)}/${name}  ${(size / 1024).toFixed(1)} KB`);
   }
+  return bytes;
+}
+
+function main() {
+  const withFallback = process.argv.includes('--with-fallback-svg');
+
+  const { files, qr } = buildAll();
+  const bytes = emit(OUT_DIR, files);
   console.log('');
-  console.log(`生成完毕：${files.length} 个文件，共 ${(bytes / 1024).toFixed(1)} KB`);
+  console.log(`矢量素材：${files.length} 个文件，共 ${(bytes / 1024).toFixed(1)} KB`);
   console.log(`二维码：版本 ${qr.version} / 纠错等级 L / 掩模 ${qr.mask} / 矩阵 ${qr.size}×${qr.size}`);
+
+  // 照片位已由 fetch-photos.mjs 负责；默认不动它们，避免覆盖真实照片
+  if (withFallback) {
+    const fb = fallbackFiles();
+    console.log('');
+    console.log('输出断网兜底剪影（不影响 photos/ 下的照片）：');
+    const fbBytes = emit(join(OUT_DIR, 'fallback'), fb);
+    console.log(`兜底素材：${fb.length} 个文件，共 ${(fbBytes / 1024).toFixed(1)} KB`);
+  } else {
+    console.log('');
+    console.log('提示：照片位（hero / portrait / veterans / desert / press）由 scripts/fetch-photos.mjs 管理，本次未触碰。');
+    console.log('      需要断网兜底的几何剪影时加 --with-fallback-svg。');
+  }
 }
 
 main();

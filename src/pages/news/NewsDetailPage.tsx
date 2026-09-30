@@ -56,7 +56,7 @@ export default function NewsDetailPage({ id }: NewsDetailPageProps) {
   /* ---------------- I. 未命中的 404 区块 ---------------- */
   if (!article) {
     return (
-      <div className="mg-page">
+      <div className="mg-page mg-news-detail">
         <Crumbs items={[{ label: '要闻动态', to: '/news' }, { label: '稿件查询结果' }]} />
         <div className="mg-layout-2col">
           <div className="mg-layout__side">
@@ -128,7 +128,7 @@ export default function NewsDetailPage({ id }: NewsDetailPageProps) {
   };
 
   return (
-    <div className="mg-page">
+    <div className="mg-page mg-news-detail">
       <Crumbs
         items={[
           { label: '要闻动态', to: '/news' },

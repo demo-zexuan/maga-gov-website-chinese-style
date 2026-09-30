@@ -1,0 +1,497 @@
+/**
+ * static 模块响应式适配
+ *
+ * I. 归属
+ *
+ * 本文件由 static 模块负责人维护，只允许写该模块自己的选择器。
+ * 加载顺序在 styles/responsive.css（Lead 的地基）之后，因此可以覆盖地基。
+ *
+ * II. 覆盖范围
+ *
+ * 1. 静态页：关于我们 / 网站地图 / 隐私政策 / 使用条款 / 联系我们 /
+ *    无障碍声明（字号调节器）/ English / 登录 / 注册（24 项表单）/ 404
+ * 2. 个人中心（/user）：我的资料、我的积分、我的办件表、我的消息
+ * 3. 友情链接中转（/link/:id）：倒计时、失败态、友链列表
+ * 4. 彩蛋弹窗（.mg-easter__*）：建国 250 周年、内部通报 —— 彩蛋层挂载在全站，
+ *    但样式归属 static 模块，故一并在此适配
+ *
+ * III. 断点约定（与地基一致，不要新增断点）
+ *
+ * 1. `max-width: 1399px` 紧凑桌面
+ * 2. `max-width: 1023px` 平板
+ * 3. `max-width: 767px`  手机
+ * 4. `max-width: 420px`  小屏手机
+ *
+ * IV. 硬约束
+ *
+ * 1. 不得影响 ≥1400px 的桌面版式（参考图还原区），故所有规则一律包在媒体查询内。
+ * 2. 不得出现横向滚动：手机端任何元素都不应超出 100vw。
+ * 3. 注册表单 24 项在手机上必须单列且输入框够大（触控高度 ≥ 38px），不允许被压缩成两列。
+ * 4. 不得用 `display:none` 藏掉内容类信息。
+ *
+ * @module styles/responsive/static
+ * @author zexuan.peng <pengzexuan2001@gmail.com>
+ * @created 2026-09-30
+ */
+
+/* ============================================================
+   I. ≤1399px 紧凑桌面
+   ============================================================ */
+
+@media (max-width: 1399px) {
+  /* 网站地图：4 列在 1024—1399px 之间仍可读，仅收紧间距 */
+  .mg-sitemap {
+    gap: 8px;
+  }
+
+  /* 注册表单：两列布局下标签列不再吃掉输入框宽度 */
+  .mg-static__form-grid .mg-form__label {
+    flex: 0 0 104px;
+  }
+}
+
+/* ============================================================
+   II. ≤1023px 平板
+   ============================================================ */
+
+@media (max-width: 1023px) {
+  /* ---------- 网站地图：13 个分组降到 2 列 ---------- */
+  .mg-sitemap {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* ---------- 表单 ---------- */
+  .mg-static__form-grid {
+    gap: 0 12px;
+  }
+
+  .mg-static__form-grid .mg-form__label {
+    flex: 0 0 96px;
+  }
+
+  /* ---------- 无障碍调节器 ---------- */
+  .mg-a11y__row {
+    gap: 6px 10px;
+  }
+
+  .mg-a11y__label {
+    flex: 0 0 78px;
+  }
+
+  /* ---------- 个人中心 ---------- */
+  .mg-user__points-value {
+    font-size: 44px;
+  }
+
+  .mg-user__guest-label {
+    flex: 0 0 96px;
+  }
+
+  /*
+   * 办件表：保持列宽，交给包裹层横向滚动。
+   * 必须限定在 .mg-static__body 内 —— 政务公开页的人事任免表使用同一组类名，
+   * 若不限定，本文件（加载在 gov.css 之后）会覆盖 gov 模块的表格宽度设置。
+   */
+  .mg-static__body .mg-table-scroll > .mg-gov__table,
+  .mg-static__body .mg-gov__table-wrap > .mg-gov__table {
+    min-width: 900px;
+  }
+
+  /* 「事项名称」为唯一弹性列，给足宽度避免逐字折行 */
+  .mg-static__body .mg-gov__col-item {
+    min-width: 220px;
+  }
+
+  /* ---------- 404 ---------- */
+  .mg-404__code {
+    font-size: 56px;
+  }
+
+  /* ---------- 彩蛋弹窗 ---------- */
+  .mg-easter__report {
+    padding: 12px 16px 16px;
+  }
+
+  .mg-easter__report-title {
+    letter-spacing: 6px;
+  }
+}
+
+/* ============================================================
+   III. ≤767px 手机
+   ============================================================ */
+
+@media (max-width: 767px) {
+  /* ---------- 网站地图：单列 ---------- */
+  .mg-sitemap {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .mg-sitemap__links li {
+    font-size: var(--fs-12);
+    padding: 3px 0;
+  }
+
+  /* ---------- 注册表单：单列 + 触控友好的输入框 ---------- */
+  .mg-static__form-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  /*
+   * 地基在手机端已把 .mg-form__row 改为纵向排列。
+   * 纵向排列下 flex-basis 作用于高度，因此必须显式收回标签的固定宽度，
+   * 否则标签会撑出 118px 的空白高度（桌面端两列布局的遗留值）；
+   * 同时把交叉轴对齐改为 stretch，让每个输入框都占满整行宽度
+   * （否则宽度会随 hint 文案长度忽宽忽窄）。
+   */
+  .mg-static__form-grid .mg-form__row,
+  .mg-static__body .mg-form__row {
+    align-items: stretch;
+  }
+
+  .mg-static__form-grid .mg-form__label,
+  .mg-static__body .mg-form__label {
+    flex: 0 0 auto;
+    width: 100%;
+    text-align: left;
+  }
+
+  .mg-static__body .mg-input,
+  .mg-static__body .mg-select,
+  .mg-static__body .mg-textarea,
+  .mg-static__form-grid .mg-input,
+  .mg-static__form-grid .mg-select,
+  .mg-static__form-grid .mg-textarea {
+    min-height: 38px;
+    padding: 6px 8px;
+    font-size: var(--fs-14);
+  }
+
+  .mg-static__radios {
+    gap: 8px 16px;
+    padding-top: 6px;
+  }
+
+  .mg-static__radio {
+    min-height: 30px;
+    font-size: var(--fs-14);
+  }
+
+  .mg-static__radio input {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* 表单按钮整行，便于点按 */
+  .mg-static__actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .mg-static__actions .mg-btn {
+    width: 100%;
+    min-height: 40px;
+    font-size: var(--fs-14);
+  }
+
+  .mg-static__actions-note {
+    text-align: center;
+  }
+
+  /* 登录页验证码：输入框独占一行，图片与「换一张」并排 */
+  .mg-static__captcha {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .mg-static__captcha-input {
+    /* 登录页输入框带内联 flex（保证桌面像素不变），手机端用 !important 收回整行 */
+    flex: 1 1 100% !important;
+  }
+
+  .mg-static__captcha-img {
+    flex: 1 1 auto;
+    height: 34px;
+  }
+
+  .mg-static__captcha-btn {
+    flex: 0 0 auto;
+    min-height: 34px;
+    font-size: var(--fs-12);
+  }
+
+  /* ---------- 信息行：标签列收窄，数值列折行 ---------- */
+  .mg-static__row-label {
+    flex: 0 0 82px;
+  }
+
+  .mg-static__row {
+    font-size: var(--fs-11);
+  }
+
+  .mg-static__hours-row {
+    font-size: var(--fs-12);
+    padding: 6px 8px;
+  }
+
+  .mg-static__hours-row > span:first-child {
+    flex: 0 0 82px;
+  }
+
+  .mg-static__clause-title {
+    font-size: var(--fs-13);
+  }
+
+  .mg-static__clause-body {
+    font-size: var(--fs-12);
+    line-height: 1.85;
+  }
+
+  .mg-static__five-title {
+    font-size: var(--fs-13);
+  }
+
+  .mg-static__five-body {
+    font-size: var(--fs-12);
+    line-height: 1.8;
+  }
+
+  .mg-static__en {
+    font-size: var(--fs-13);
+    line-height: 1.9;
+  }
+
+  .mg-static__en p {
+    text-indent: 0;
+  }
+
+  .mg-static__note,
+  .mg-static__disclaimer {
+    font-size: var(--fs-10);
+  }
+
+  /* ---------- 无障碍调节器：按钮整行，便于点按 ---------- */
+  .mg-a11y__panel {
+    padding: 8px 10px;
+  }
+
+  .mg-a11y__row {
+    align-items: flex-start;
+  }
+
+  .mg-a11y__label {
+    flex: 0 0 70px;
+    font-size: var(--fs-12);
+  }
+
+  .mg-a11y__value {
+    font-size: var(--fs-11);
+  }
+
+  .mg-a11y__row .mg-btn {
+    flex: 1 1 100%;
+    min-height: 38px;
+    font-size: var(--fs-13);
+  }
+
+  .mg-a11y__link {
+    font-size: var(--fs-12);
+  }
+
+  /* ---------- 个人中心 ---------- */
+  .mg-user__guest-label {
+    flex: 0 0 84px;
+  }
+
+  .mg-user__guest-row {
+    font-size: var(--fs-12);
+    padding: 6px 8px;
+  }
+
+  .mg-user__points-value {
+    font-size: 40px;
+  }
+
+  .mg-user__points-note {
+    font-size: var(--fs-11);
+  }
+
+  /* 我的办件表：横向滚动，列宽保留（同样限定在个人中心内） */
+  .mg-static__body .mg-gov__table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mg-static__body .mg-table-scroll > .mg-gov__table,
+  .mg-static__body .mg-gov__table-wrap > .mg-gov__table {
+    min-width: 980px;
+  }
+
+  .mg-static__body .mg-gov__col-item {
+    min-width: 240px;
+  }
+
+  .mg-static__body .mg-table-scroll > .mg-gov__table th,
+  .mg-static__body .mg-table-scroll > .mg-gov__table td,
+  .mg-static__body .mg-gov__table-wrap > .mg-gov__table th,
+  .mg-static__body .mg-gov__table-wrap > .mg-gov__table td {
+    font-size: var(--fs-11);
+  }
+
+  .mg-user__msg-title {
+    font-size: var(--fs-12);
+  }
+
+  .mg-user__msg-body,
+  .mg-user__msg-date {
+    font-size: var(--fs-11);
+  }
+
+  /* ---------- 友情链接中转 ---------- */
+  .mg-linkpage__lead {
+    font-size: var(--fs-13);
+  }
+
+  .mg-linkpage__count-num {
+    font-size: 40px;
+  }
+
+  .mg-linkpage__failed-title {
+    font-size: var(--fs-14);
+  }
+
+  .mg-linkpage__failed-note {
+    font-size: var(--fs-11);
+  }
+
+  /* ---------- 404 ---------- */
+  .mg-404 {
+    padding: 16px 8px 20px;
+  }
+
+  .mg-404__code {
+    font-size: 48px;
+  }
+
+  .mg-404__title {
+    font-size: var(--fs-15);
+  }
+
+  .mg-404__hint {
+    font-size: var(--fs-12);
+  }
+
+  .mg-404__reasons {
+    padding: 8px 10px 8px 26px;
+    font-size: var(--fs-11);
+    line-height: 1.8;
+  }
+
+  .mg-404__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .mg-404__actions .mg-btn {
+    width: 100%;
+    min-height: 40px;
+  }
+
+  .mg-404__foot {
+    font-size: var(--fs-10);
+  }
+
+  /* ---------- 彩蛋弹窗 ---------- */
+  .mg-easter__foot {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .mg-easter__foot .mg-btn {
+    width: 100%;
+    min-height: 38px;
+  }
+
+  .mg-easter__foot-note {
+    text-align: left;
+  }
+
+  .mg-easter__anni-num {
+    font-size: 56px;
+  }
+
+  .mg-easter__anni-text {
+    font-size: var(--fs-12);
+    text-indent: 0;
+  }
+
+  .mg-easter__row > span:first-child {
+    flex: 0 0 104px;
+  }
+
+  .mg-easter__report {
+    padding: 10px 10px 14px;
+  }
+
+  .mg-easter__report-head {
+    font-size: var(--fs-12);
+    letter-spacing: 0;
+  }
+
+  .mg-easter__report-title {
+    font-size: var(--fs-16);
+    letter-spacing: 4px;
+  }
+
+  .mg-easter__report-body p {
+    font-size: var(--fs-12);
+    line-height: 1.9;
+    text-indent: 0;
+  }
+
+  .mg-easter__report-foot {
+    font-size: var(--fs-12);
+  }
+}
+
+/* ============================================================
+   IV. ≤420px 小屏手机
+   ============================================================ */
+
+@media (max-width: 420px) {
+  .mg-static__row-label {
+    flex: 0 0 72px;
+  }
+
+  .mg-user__guest-label {
+    flex: 0 0 76px;
+  }
+
+  .mg-user__points-value {
+    font-size: 34px;
+  }
+
+  .mg-linkpage__count-num {
+    font-size: 34px;
+  }
+
+  .mg-404__code {
+    font-size: 42px;
+  }
+
+  .mg-easter__anni-num {
+    font-size: 46px;
+  }
+
+  .mg-easter__row > span:first-child {
+    flex: 0 0 88px;
+  }
+
+  .mg-sitemap__links {
+    padding: 6px 6px 8px 18px;
+  }
+}

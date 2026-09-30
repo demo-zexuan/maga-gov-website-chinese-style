@@ -1,0 +1,464 @@
+/**
+ * interact 模块响应式适配
+ *
+ * I. 归属
+ *
+ * 本文件由 interact 模块负责人维护，只允许写该模块自己的选择器。
+ * 加载顺序在 styles/responsive.css（Lead 的地基）之后，因此可以覆盖地基。
+ *
+ * II. 断点约定（与地基一致，不要新增断点）
+ *
+ * 1. `max-width: 1399px` 紧凑桌面
+ * 2. `max-width: 1023px` 平板
+ * 3. `max-width: 767px`  手机
+ * 4. `max-width: 420px`  小屏手机
+ *
+ * III. 硬约束
+ *
+ * 1. 不得影响 ≥1400px 的桌面版式（参考图还原区）。
+ * 2. 不得出现横向滚动：手机端任何元素都不应超出 100vw。
+ * 3. 表格类内容必须可横向滚动查看，不允许被裁切。
+ * 4. 出现内容截断时优先"换行/堆叠"，不要用 `display:none` 藏掉信息，
+ *    除非该信息确实是纯装饰。
+ *
+ * IV. 本文件覆盖的子栏目
+ *
+ * 1. 我要写信 `/interact`（长表单：8 个字段 + 验证码 + 条款）
+ * 2. 建言献策 `/interact/advice`（列表 + 全文弹窗 + 简化表单）
+ * 3. 在线调查 `/interact/survey`（3 份问卷，选项组要点得准）
+ * 4. 常见问题 `/interact/faq`（分类标签 + 手风琴）
+ * 5. 信件选登 `/interact/letters`（信件列表 + 详情弹窗）
+ *
+ * V. 特别注意
+ *
+ * 手机端 `.mg-form__row` 被地基改成纵向排列，但基类的 `align-items: flex-start`
+ * 在纵向弹性盒里会让子项退化为"内容宽度"——写信表单的输入框因此只有 140px 左右，
+ * 而写信是本模块的核心交互。故本文件在手机断点把模块内表单行显式改为
+ * `align-items: stretch` 并让控件铺满整行，同时把点按高度提升到 32px 以上。
+ *
+ * @module styles/responsive/interact
+ * @author zexuan.peng <pengzexuan2001@gmail.com>
+ * @created 2026-09-30
+ */
+
+/* ============================================================
+   I. ≤1399px 紧凑桌面
+   ============================================================ */
+
+@media (max-width: 1399px) {
+  .mg-it-banner {
+    padding: 9px 12px;
+  }
+
+  .mg-it-advice__summary,
+  .mg-it-advice__meta,
+  .mg-it-advice__foot {
+    margin-left: 26px;
+  }
+}
+
+/* ============================================================
+   II. ≤1023px 平板：主栏占满整行后的呼吸感调整
+   ============================================================ */
+
+@media (max-width: 1023px) {
+  .mg-it-survey__opts {
+    gap: 4px 12px;
+  }
+
+  .mg-it-faq__q {
+    padding: 8px 6px;
+  }
+
+  .mg-it-cats {
+    gap: 5px;
+  }
+}
+
+/* ============================================================
+   III. ≤767px 手机
+   ============================================================ */
+
+@media (max-width: 767px) {
+  /* ---------- 写信表单：单列 + 控件铺满 + 点按区域 ---------- */
+
+  .mg-it-form .mg-form__row {
+    align-items: stretch;
+    gap: 4px;
+    margin-bottom: 10px;
+  }
+
+  .mg-it-form .mg-form__label,
+  .mg-it-form .mg-form__control {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .mg-it-form .mg-form__label {
+    padding-top: 0;
+    text-align: left;
+    font-size: var(--fs-14);
+  }
+
+  .mg-it-form .mg-input,
+  .mg-it-form .mg-select {
+    min-height: 34px;
+    padding: 5px 8px;
+    font-size: var(--fs-15);
+  }
+
+  .mg-it-form .mg-textarea {
+    min-height: 108px;
+    padding: 6px 8px;
+    font-size: var(--fs-15);
+    line-height: 1.75;
+  }
+
+  .mg-it-form .mg-form__hint,
+  .mg-it-form .mg-form__error {
+    font-size: var(--fs-12);
+    line-height: 1.6;
+  }
+
+  /* 单选项与勾选项：加大点按区域 */
+  .mg-it-form .mg-radio-group {
+    gap: 6px 12px;
+    padding-top: 0;
+  }
+
+  .mg-it-radio {
+    min-height: 30px;
+    padding: 3px 8px;
+    border: 1px solid var(--c-border);
+    background: #fbfbfb;
+    font-size: var(--fs-14);
+  }
+
+  .mg-it-radio input[type='radio'],
+  .mg-it-agree input[type='checkbox'] {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+  }
+
+  .mg-it-agree {
+    min-height: 30px;
+    padding: 4px 0;
+    font-size: var(--fs-13);
+  }
+
+  .mg-it-charcount {
+    font-size: var(--fs-12);
+  }
+
+  .mg-it-captcha-row {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .mg-it-captcha-row__input {
+    flex: 1 1 110px;
+    min-height: 34px;
+  }
+
+  .mg-it-captcha {
+    display: flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 2px 12px;
+    font-size: var(--fs-16);
+  }
+
+  .mg-it-actions {
+    gap: 8px;
+  }
+
+  .mg-it-actions .mg-btn {
+    min-height: 32px;
+    padding: 0 16px;
+    font-size: var(--fs-14);
+  }
+
+  /* 提交后的受理编号：小屏不再拉字距，避免折行 */
+  .mg-it-receipt {
+    font-size: var(--fs-16);
+    letter-spacing: 1px;
+    word-break: break-all;
+  }
+
+  /* ---------- 栏目横幅与工具条 ---------- */
+
+  .mg-it-banner {
+    padding: 8px 10px;
+  }
+
+  .mg-it-banner__title {
+    font-size: var(--fs-16);
+  }
+
+  .mg-it-banner__sub {
+    font-size: var(--fs-12);
+  }
+
+  .mg-it-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .mg-it-search {
+    flex: 1 1 auto;
+    width: 100%;
+    min-height: 32px;
+    font-size: var(--fs-15);
+  }
+
+  .mg-it-select {
+    flex: 1 1 auto;
+    width: 100%;
+    min-height: 32px;
+    font-size: var(--fs-15);
+  }
+
+  .mg-it-toolbar .mg-btn {
+    min-height: 30px;
+  }
+
+  /* ---------- 常见问题：分类标签与手风琴 ---------- */
+
+  .mg-it-cats {
+    gap: 6px;
+  }
+
+  .mg-it-cat {
+    min-height: 28px;
+    padding: 4px 10px;
+    font-size: var(--fs-12);
+  }
+
+  .mg-it-faq__q {
+    align-items: flex-start;
+    padding: 9px 6px;
+    font-size: var(--fs-14);
+    line-height: 1.5;
+  }
+
+  .mg-it-faq__mark {
+    flex: 0 0 16px;
+    font-size: var(--fs-16);
+  }
+
+  .mg-it-faq__a {
+    padding: 0 8px 10px 22px;
+  }
+
+  .mg-it-faq__ans,
+  .mg-it-faq__note {
+    font-size: var(--fs-13);
+  }
+
+  /* ---------- 在线调查：选项组两列，确保点得准 ---------- */
+
+  .mg-it-survey__desc {
+    font-size: var(--fs-13);
+  }
+
+  .mg-it-survey__metric {
+    flex-wrap: wrap;
+    gap: 2px 5px;
+  }
+
+  .mg-it-survey__num {
+    font-size: var(--fs-20);
+  }
+
+  .mg-it-survey__q {
+    padding: 8px 0;
+  }
+
+  .mg-it-survey__qtext {
+    font-size: var(--fs-14);
+    line-height: 1.6;
+  }
+
+  .mg-it-survey__opts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px 8px;
+    padding-left: 0;
+    margin-top: 6px;
+  }
+
+  .mg-it-opt {
+    min-height: 30px;
+    padding: 5px 8px;
+    border-color: var(--c-border);
+    background: #fbfbfb;
+    font-size: var(--fs-13);
+  }
+
+  .mg-it-opt input[type='radio'] {
+    width: 15px;
+    height: 15px;
+    flex: 0 0 auto;
+  }
+
+  .mg-it-survey__opts .mg-it-opt.is-picked {
+    background: var(--c-red-tint);
+    border-color: var(--c-red);
+  }
+
+  .mg-it-surveys .mg-panel__body {
+    padding-bottom: 10px;
+  }
+
+  /* ---------- 信件选登 ---------- */
+
+  .mg-letter {
+    padding: 8px;
+  }
+
+  .mg-letter__head {
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: flex-start;
+  }
+
+  /* 标题在窄屏必须折行，省略号会让一封信彻底读不出 */
+  .mg-letter__title {
+    flex: 1 1 100%;
+    white-space: normal;
+    overflow: visible;
+    font-size: var(--fs-13);
+    line-height: 1.5;
+  }
+
+  .mg-it-letter__score {
+    flex: 0 0 auto;
+    margin-left: auto;
+  }
+
+  .mg-it-letter__meta {
+    display: block;
+    font-size: var(--fs-12);
+    line-height: 1.8;
+  }
+
+  .mg-it-letter__meta > span {
+    display: inline-block;
+    margin-right: 12px;
+  }
+
+  .mg-letter__body {
+    font-size: var(--fs-13);
+  }
+
+  .mg-it-letter__foot {
+    gap: 6px;
+  }
+
+  .mg-it-letter__foot .mg-btn {
+    min-height: 30px;
+  }
+
+  /* ---------- 建言献策 ---------- */
+
+  .mg-it-advice__head {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .mg-it-advice__title {
+    flex: 1 1 100%;
+    font-size: var(--fs-14);
+    line-height: 1.5;
+  }
+
+  .mg-it-advice__meta {
+    display: block;
+    margin: 4px 0;
+    font-size: var(--fs-12);
+    line-height: 1.8;
+  }
+
+  .mg-it-advice__meta > span {
+    display: inline-block;
+    margin-right: 12px;
+  }
+
+  .mg-it-advice__summary {
+    margin-left: 0;
+    font-size: var(--fs-13);
+  }
+
+  .mg-it-advice__foot {
+    margin-left: 0;
+    gap: 6px;
+  }
+
+  .mg-it-advice__foot .mg-btn {
+    min-height: 30px;
+  }
+
+  /* ---------- 弹窗详情：小屏可读 ---------- */
+
+  .mg-it-detail__title {
+    font-size: var(--fs-14);
+    line-height: 1.5;
+  }
+
+  .mg-it-detail__label {
+    font-size: var(--fs-13);
+  }
+
+  .mg-it-detail__p,
+  .mg-it-detail .mg-letter__body,
+  .mg-it-detail .mg-letter__reply {
+    font-size: var(--fs-13);
+    line-height: 1.9;
+  }
+
+  .mg-it-detail .mg-letter__meta {
+    display: block;
+    font-size: var(--fs-12);
+    line-height: 1.8;
+  }
+
+  .mg-it-detail .mg-letter__meta > span {
+    display: inline-block;
+    margin-right: 12px;
+  }
+
+  .mg-it-note {
+    font-size: var(--fs-12);
+  }
+}
+
+/* ============================================================
+   IV. ≤420px 小屏手机
+   ============================================================ */
+
+@media (max-width: 420px) {
+  /* 小屏上一个选项占满一行，避免误触 */
+  .mg-it-survey__opts {
+    grid-template-columns: 1fr;
+  }
+
+  .mg-it-banner__title {
+    font-size: var(--fs-15);
+  }
+
+  .mg-it-advice__title {
+    font-size: var(--fs-13);
+  }
+
+  .mg-it-radio {
+    flex: 1 1 calc(50% - 6px);
+    justify-content: flex-start;
+  }
+
+  .mg-it-receipt {
+    font-size: var(--fs-14);
+  }
+}

@@ -119,7 +119,7 @@ export default function NewsListPage({ tab, category, q }: NewsListPageProps) {
     !keyword && current === 1 && (active === 'all' || active === 'top') ? items[0] : null;
 
   return (
-    <div className="mg-page">
+    <div className="mg-page mg-news-page">
       <Crumbs
         items={[
           { label: '要闻动态', to: '/news' },
