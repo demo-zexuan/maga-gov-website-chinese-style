@@ -1,0 +1,51 @@
+name: CI
+
+# 在 push / PR 时验证站点可以构建通过。
+# 注意：本仓库的部署走 Cloudflare Workers（见 README），CI 只做质量门禁。
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: 类型检查 / 素材生成 / 构建 / 自检
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: 安装 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: 安装依赖
+        run: pnpm install --frozen-lockfile
+
+      - name: 生成站点素材
+        run: pnpm run assets
+
+      - name: 类型检查
+        run: npx tsc -b --pretty false
+
+      - name: 构建
+        run: pnpm run build
+
+      - name: 站点自检
+        run: node scripts/verify.mjs
+
+      - name: 上传构建产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 7
